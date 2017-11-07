@@ -28,12 +28,13 @@ public class ProcessData {
 	public ProcessDataDto getProcessData(@PathParam("processInstanceId") String processInstanceId){
 		//http://localhost:8080/workflowrestservice/rest/processdata/get/{processInstanceId}
 
-//		WorkflowDb workflowDb = new WorkflowDb();
-//		return workflowDb.getProcessData("6b92c153-b9d2-11e7-a421-02429089a5c8");
 		System.out.println("processInstanceId: " + processInstanceId);
-		WorkflowDbDummyData workflowDbDummyData = new WorkflowDbDummyData();
-		ProcessDataDto processData = workflowDbDummyData.getProcessData(processInstanceId);
-		System.out.println("processData.field1: " + processData.getField1());
-		return workflowDbDummyData.getProcessData(processInstanceId);
+//		WorkflowDbDummyData workflowDbDummyData = new WorkflowDbDummyData();
+//		ProcessDataDto processData = workflowDbDummyData.getProcessData(processInstanceId);
+//		System.out.println("processData.field1: " + processData.getField1());
+//		return workflowDbDummyData.getProcessData(processInstanceId);
+
+		WorkflowDb workflowDb = new WorkflowDb();
+		return workflowDb.getProcessData(processInstanceId);
 	}
 }
