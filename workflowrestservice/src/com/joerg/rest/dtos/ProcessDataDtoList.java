@@ -6,6 +6,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "responseList")
 public class ProcessDataDtoList {
+	public ProcessDataDtoList() {
+		super();
+	}
+	
 	private List<ProcessDataDto> processDataDtoList = new ArrayList<ProcessDataDto>();
 
 	public List<ProcessDataDto> getProcessDataDtoList() {
