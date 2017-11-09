@@ -29,12 +29,12 @@ public class ProcessData {
 		//http://localhost:8080/workflowrestservice/rest/processdata/get/{processInstanceId}
 
 		System.out.println("processInstanceId: " + processInstanceId);
-//		WorkflowDbDummyData workflowDbDummyData = new WorkflowDbDummyData();
-//		ProcessDataDto processData = workflowDbDummyData.getProcessData(processInstanceId);
-//		System.out.println("processData.field1: " + processData.getField1());
-//		return workflowDbDummyData.getProcessData(processInstanceId);
+		WorkflowDbDummyData workflowDbDummyData = new WorkflowDbDummyData();
+		ProcessDataDto processData = workflowDbDummyData.getProcessData(processInstanceId);
+		System.out.println("processData.field1: " + processData.getField1());
+		return workflowDbDummyData.getProcessData(processInstanceId);
 
-		WorkflowDb workflowDb = new WorkflowDb();
-		return workflowDb.getProcessData(processInstanceId);
+//		WorkflowDb workflowDb = new WorkflowDb();
+//		return workflowDb.getProcessData(processInstanceId);
 	}
 }
