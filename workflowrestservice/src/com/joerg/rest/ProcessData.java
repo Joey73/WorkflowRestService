@@ -16,10 +16,12 @@ public class ProcessData {
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
-	public ProcessDataDtoList getAllProcessData(){
+	public ProcessDataDto[] getAllProcessData(){
 		//http://localhost:8080/workflowrestservice/rest/processdata/getall
 		WorkflowDb workflowDb = new WorkflowDb();
-		return workflowDb.getAllProcessData();
+		workflowDb.getAllProcessData().getProcessDataDtoList();
+		//return workflowDb.getAllProcessData().getProcessDataDtoList().toArray();
+		return null;
 	}
 
 	@GET
@@ -27,12 +29,13 @@ public class ProcessData {
 	@Produces("application/json")
 	public ProcessDataDto getProcessData(@PathParam("processInstanceId") String processInstanceId){
 		//http://localhost:8080/workflowrestservice/rest/processdata/get/{processInstanceId}
-
 		System.out.println("processInstanceId: " + processInstanceId);
+
+
 		WorkflowDbDummyData workflowDbDummyData = new WorkflowDbDummyData();
 		ProcessDataDto processData = workflowDbDummyData.getProcessData(processInstanceId);
 		System.out.println("processData.field1: " + processData.getField1());
-		return workflowDbDummyData.getProcessData(processInstanceId);
+		return processData;
 
 //		WorkflowDb workflowDb = new WorkflowDb();
 //		return workflowDb.getProcessData(processInstanceId);
