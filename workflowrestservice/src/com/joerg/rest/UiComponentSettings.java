@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.joerg.db.WorkflowDb;
 import com.joerg.db.WorkflowDbDummyData;
 import com.joerg.rest.dtos.UiComponentSettingsDto;
 import com.joerg.rest.dtos.UiComponentSettingsListDto;
@@ -22,13 +23,8 @@ public class UiComponentSettings {
 	public UiComponentSettingsListDto getAllUiComponentSettings(){
 		//http://localhost:18080/workflowrestservice/rest/uicomponentsettings/getall
 		
-		WorkflowDbDummyData workflowDbDummyData = new WorkflowDbDummyData();
-		UiComponentSettingsListDto uiComponentSettingsListDto = workflowDbDummyData.getAllUiComponentSettings();
-		
-		return uiComponentSettingsListDto;
-
-//		WorkflowDb workflowDb = new WorkflowDb();
-//		return workflowDb.getAllUiComponentSettings();
+		WorkflowDb workflowDb = new WorkflowDb();
+		return workflowDb.getAllUiComponentSettings();
 	}
 
 	@GET
@@ -36,16 +32,10 @@ public class UiComponentSettings {
 	@Produces("application/json")
 	public UiComponentSettingsDto getComponentSettings(@PathParam("componentId") String componentId){
 		//http://localhost:18080/workflowrestservice/rest/uicomponentsettings/get/{componentId}
-		
 		System.out.println("componentId: " + componentId);
 
-		WorkflowDbDummyData workflowDbDummyData = new WorkflowDbDummyData();
-		UiComponentSettingsDto uiComponentSettingsDto = workflowDbDummyData.getUiComponentSettings(componentId);
-		System.out.println("uiComponentSettings.isEnabled: " + uiComponentSettingsDto.isEnabled());
-		return uiComponentSettingsDto;
-
-//		WorkflowDb workflowDb = new WorkflowDb();
-//		return workflowDb.getProcessData(processInstanceId);
+		WorkflowDb workflowDb = new WorkflowDb();
+		return workflowDb.getUiComponentSettings(componentId);
 	}
 	
 	@POST
@@ -61,7 +51,10 @@ public class UiComponentSettings {
 		System.out.println("uiComponentSettingsDto.isVisible(): " + uiComponentSettingsDto.isVisible());
 		System.out.println("uiComponentSettingsDto.isEnabled(): " + uiComponentSettingsDto.isEnabled());
 		System.out.println("uiComponentSettingsDto.isRequired(): " + uiComponentSettingsDto.isRequired());
-		String output = "POST: Jersey says: " + uiComponentSettingsDto.getComponentId();
+		
+		WorkflowDb workflowDb = new WorkflowDb();
+		workflowDb.updateUiComponentSetting(uiComponentSettingsDto);
+		
 		return Response.status(200).entity(uiComponentSettingsDto).build();
 	}
 }

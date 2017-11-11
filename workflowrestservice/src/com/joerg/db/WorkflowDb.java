@@ -11,6 +11,8 @@ import java.util.List;
 import com.joerg.rest.ProcessData;
 import com.joerg.rest.dtos.ProcessDataDto;
 import com.joerg.rest.dtos.ProcessDataDtoList;
+import com.joerg.rest.dtos.UiComponentSettingsDto;
+import com.joerg.rest.dtos.UiComponentSettingsListDto;
 
 //http://crunchify.com/java-mysql-jdbc-hello-world-tutorial-create-connection-insert-data-and-retrieve-data-from-mysql/
 public class WorkflowDb {
@@ -73,6 +75,7 @@ public class WorkflowDb {
  
 				System.out.format("%s, %s, %s, %s\n", processInstanceID, field1, field2, field3);
 			}
+			workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -98,6 +101,7 @@ public class WorkflowDb {
  
 				System.out.format("%s, %s, %s, %s\n", processInstanceID, field1, field2, field3);
 			}
+			workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -108,5 +112,95 @@ public class WorkflowDb {
 	private static void log(String string) {
 		System.out.println(string);
  
-	}	
+	}
+	
+	public UiComponentSettingsListDto getAllUiComponentSettings() {
+		UiComponentSettingsListDto uiComponentSettingsListDto = new UiComponentSettingsListDto();
+		try {
+			String selectStatement = "SELECT * FROM workflowdb.uicomponentsettings";
+ 
+			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
+ 
+			ResultSet rs = prepareStat.executeQuery();
+ 
+			while (rs.next()) {
+				uiComponentSettingsListDto.addUiComponentSettingsDto(
+					new UiComponentSettingsDto(
+						rs.getString("componentId"),
+						(rs.getInt("visible") == 1),
+						(rs.getInt("enabled") == 1),
+						(rs.getInt("required") == 1)
+					)
+				);
+
+				String componentId = rs.getString("componentId");
+				boolean visible = (rs.getInt("visible") == 1);
+				boolean enabled = (rs.getInt("enabled") == 1);
+				boolean required = (rs.getInt("required") == 1);
+ 
+				System.out.format("%s, %s, %s, %s\n", componentId, visible, enabled, required);
+			}
+			workflowDbConnection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return uiComponentSettingsListDto; 
+	}
+	
+	public UiComponentSettingsDto getUiComponentSettings(String componentId) {
+		UiComponentSettingsDto uiComponentSettingsDto = new UiComponentSettingsDto();
+		try{
+			String selectStatement = "Select * from workflowdb.uicomponentsettings where componentID = '" + componentId + "'";
+			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
+			 
+			ResultSet rs = prepareStat.executeQuery();
+			
+			while (rs.next()) {
+				uiComponentSettingsDto = new UiComponentSettingsDto(
+						rs.getString("componentId"),
+						(rs.getInt("visible") == 1),
+						(rs.getInt("enabled") == 1),
+						(rs.getInt("required") == 1)
+				);
+
+				String compId = rs.getString("componentId");
+				boolean visible = (rs.getInt("visible") == 1);
+				boolean enabled = (rs.getInt("enabled") == 1);
+				boolean required = (rs.getInt("required") == 1);
+ 
+				System.out.format("%s, %s, %s, %s\n", compId, visible, enabled, required);
+			}
+			workflowDbConnection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return uiComponentSettingsDto;
+	}
+	
+	public boolean updateUiComponentSetting(UiComponentSettingsDto newUiComponentSettingsDto){
+		try{
+			String updateStatement = 
+					"update workflowdb.uicomponentsettings "
+					+ "set enabled = ?, "
+					+ "required = ?, "
+					+ "visible = ? "
+					+ "where componentID = ?";
+			prepareStat = workflowDbConnection.prepareStatement(updateStatement);
+			prepareStat.setInt(1, newUiComponentSettingsDto.isEnabled() ? 1 : 0);
+			prepareStat.setInt(2, newUiComponentSettingsDto.isRequired() ? 1 : 0);
+			prepareStat.setInt(3, newUiComponentSettingsDto.isVisible() ? 1 : 0);
+			prepareStat.setString(4, newUiComponentSettingsDto.getComponentId());
+
+			prepareStat.executeUpdate();
+	      
+			workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
 }
