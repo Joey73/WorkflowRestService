@@ -109,9 +109,29 @@ public class WorkflowDb {
 		return processDataDto;
 	}
 
-	private static void log(String string) {
-		System.out.println(string);
- 
+	public boolean updateProcessData(ProcessDataDto newProcessDataDto){
+		try{
+			String updateStatement = 
+					"update workflowdb.processdata "
+					+ "set field1 = ?, "
+					+ "field2 = ?, "
+					+ "field3 = ? "
+					+ "where processInstanceID = ?";
+			prepareStat = workflowDbConnection.prepareStatement(updateStatement);
+			prepareStat.setString(1, newProcessDataDto.getField1());
+			prepareStat.setString(2, newProcessDataDto.getField2());
+			prepareStat.setString(3, newProcessDataDto.getField3());
+			prepareStat.setString(4, newProcessDataDto.getProcessInstanceId());
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
 	}
 	
 	public UiComponentSettingsListDto getAllUiComponentSettings() {
@@ -202,5 +222,10 @@ public class WorkflowDb {
 	    }
 	
 		return true;
+	}
+
+	private static void log(String string) {
+		System.out.println(string);
+ 
 	}
 }
