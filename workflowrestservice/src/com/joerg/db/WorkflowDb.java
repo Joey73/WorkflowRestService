@@ -75,7 +75,7 @@ public class WorkflowDb {
  
 				System.out.format("%s, %s, %s, %s\n", processInstanceID, field1, field2, field3);
 			}
-			workflowDbConnection.close();
+			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -101,7 +101,7 @@ public class WorkflowDb {
  
 				System.out.format("%s, %s, %s, %s\n", processInstanceID, field1, field2, field3);
 			}
-			workflowDbConnection.close();
+			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -140,7 +140,7 @@ public class WorkflowDb {
  
 				System.out.format("%s, %s, %s, %s\n", componentId, visible, enabled, required);
 			}
-			workflowDbConnection.close();
+			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -171,7 +171,7 @@ public class WorkflowDb {
  
 				System.out.format("%s, %s, %s, %s\n", compId, visible, enabled, required);
 			}
-			workflowDbConnection.close();
+			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -195,7 +195,7 @@ public class WorkflowDb {
 
 			prepareStat.executeUpdate();
 	      
-			workflowDbConnection.close();
+			//workflowDbConnection.close();
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
