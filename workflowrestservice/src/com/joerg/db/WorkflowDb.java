@@ -13,10 +13,13 @@ import com.joerg.rest.dtos.ProcessDataDto;
 import com.joerg.rest.dtos.ProcessDataDtoList;
 import com.joerg.rest.dtos.UiComponentSettingsDto;
 import com.joerg.rest.dtos.UiComponentSettingsListDto;
+import com.joerg.rest.dtos.UserDto;
+import com.joerg.rest.dtos.UserListDto;
 
 //http://crunchify.com/java-mysql-jdbc-hello-world-tutorial-create-connection-insert-data-and-retrieve-data-from-mysql/
 public class WorkflowDb {
-	public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
+	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
+	public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
 	public static final String USER = "root";
 	public static final String PASSWORD = "12345";
 
@@ -224,6 +227,98 @@ public class WorkflowDb {
 		return true;
 	}
 
+	public UserListDto getAllUsers() {
+		UserListDto userListDto = new UserListDto();
+		try {
+			String selectStatement = "SELECT * FROM workflowdb.user";
+ 
+			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
+ 
+			ResultSet rs = prepareStat.executeQuery();
+ 
+			while (rs.next()) {
+				userListDto.addUserDto(
+					new UserDto(
+						rs.getString("userId"),
+						rs.getString("lastname"),
+						rs.getString("firstname"),
+						rs.getString("email")
+					)
+				);
+
+				String userId = rs.getString("userId");
+				String lastname = rs.getString("lastname");
+				String firstname = rs.getString("firstname");
+				String email = rs.getString("email");
+ 
+				System.out.format("%s, %s, %s, %s\n", userId, lastname, firstname, email);
+			}
+			//workflowDbConnection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return userListDto; 
+	}
+	
+	public UserDto getUser(String userId) {
+		UserDto userDto = new UserDto();
+		try{
+			String selectStatement = "Select * from workflowdb.user where userID = '" + userId + "'";
+			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
+			 
+			ResultSet rs = prepareStat.executeQuery();
+			
+			while (rs.next()) {
+				userDto = new UserDto(
+						rs.getString("userId"),
+						rs.getString("lastname"),
+						rs.getString("firstname"),
+						rs.getString("email")
+				);
+
+				String uId = rs.getString("userId");
+				String lastname = rs.getString("lastname");
+				String firstname = rs.getString("firstname");
+				String email = rs.getString("email");
+ 
+				System.out.format("%s, %s, %s, %s\n", uId, lastname, firstname, email);
+			}
+			//workflowDbConnection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return userDto;
+	}
+	
+	public boolean updateUser(UserDto newUserDto){
+		try{
+			String updateStatement = 
+					"update workflowdb.user "
+					+ "set lastname = ?, "
+					+ "firstname = ?, "
+					+ "email = ? "
+					+ "where userID = ?";
+			prepareStat = workflowDbConnection.prepareStatement(updateStatement);
+			prepareStat.setString(1, newUserDto.getLastname());
+			prepareStat.setString(2, newUserDto.getFirstname());
+			prepareStat.setString(3, newUserDto.getEmail());
+			prepareStat.setString(4, newUserDto.getUserId());
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
+	
+	
+	
 	private static void log(String string) {
 		System.out.println(string);
  
