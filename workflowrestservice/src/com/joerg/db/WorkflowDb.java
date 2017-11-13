@@ -18,8 +18,8 @@ import com.joerg.rest.dtos.UserListDto;
 
 //http://crunchify.com/java-mysql-jdbc-hello-world-tutorial-create-connection-insert-data-and-retrieve-data-from-mysql/
 public class WorkflowDb {
-	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
-	public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
+	public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
+	//public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
 	public static final String USER = "root";
 	public static final String PASSWORD = "12345";
 
