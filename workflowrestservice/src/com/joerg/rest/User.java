@@ -1,8 +1,10 @@
 package com.joerg.rest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -39,6 +41,26 @@ public class User {
 	}
 	
 	@POST
+    @Path("/add")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addUser(UserDto userDto) {
+		//http://localhost:18080/workflowrestservice/rest/user/add
+		if(userDto == null) {
+			return Response.status(204).build();
+		}
+		System.out.println("userDto.getUserId(): " + userDto.getUserId());
+		System.out.println("userDto.getLastname(): " + userDto.getLastname());
+		System.out.println("userDto.getFirstname(): " + userDto.getFirstname());
+		System.out.println("userDto.getEmail(): " + userDto.getEmail());
+		
+		WorkflowDb workflowDb = new WorkflowDb();
+		workflowDb.addUser(userDto);
+		
+		return Response.status(200).entity(userDto).build();
+	}
+	
+	@PUT
     @Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -54,6 +76,26 @@ public class User {
 		
 		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.updateUser(userDto);
+		
+		return Response.status(200).entity(userDto).build();
+	}
+	
+	@DELETE
+    @Path("/delete")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteUser(UserDto userDto) {
+		//http://localhost:18080/workflowrestservice/rest/user/add
+		if(userDto == null) {
+			return Response.status(204).build();
+		}
+		System.out.println("userDto.getUserId(): " + userDto.getUserId());
+		System.out.println("userDto.getLastname(): " + userDto.getLastname());
+		System.out.println("userDto.getFirstname(): " + userDto.getFirstname());
+		System.out.println("userDto.getEmail(): " + userDto.getEmail());
+		
+		WorkflowDb workflowDb = new WorkflowDb();
+		workflowDb.deleteUser(userDto.getUserId());
 		
 		return Response.status(200).entity(userDto).build();
 	}

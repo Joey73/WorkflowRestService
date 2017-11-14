@@ -16,10 +16,9 @@ import com.joerg.rest.dtos.UiComponentSettingsListDto;
 import com.joerg.rest.dtos.UserDto;
 import com.joerg.rest.dtos.UserListDto;
 
-//http://crunchify.com/java-mysql-jdbc-hello-world-tutorial-create-connection-insert-data-and-retrieve-data-from-mysql/
 public class WorkflowDb {
-	public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
-	//public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
+	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
+	public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
 	public static final String USER = "root";
 	public static final String PASSWORD = "12345";
 
@@ -293,6 +292,7 @@ public class WorkflowDb {
 	}
 	
 	public boolean updateUser(UserDto newUserDto){
+		log(newUserDto.getUserId() + " " + newUserDto.getLastname() + " " + newUserDto.getFirstname() + " " + newUserDto.getEmail());
 		try{
 			String updateStatement = 
 					"update workflowdb.user "
@@ -317,7 +317,49 @@ public class WorkflowDb {
 		return true;
 	}
 	
+	public boolean addUser(UserDto newUserDto){
+		log(newUserDto.getUserId() + " " + newUserDto.getLastname() + " " + newUserDto.getFirstname() + " " + newUserDto.getEmail());
+		try{
+			String insertStatement = 
+					"insert into workflowdb.user "
+					+ "(userID, lastname, firstname, email)"
+					+ "values (?, ?, ?, ?)";
+			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
+			prepareStat.setString(1, newUserDto.getUserId());
+			prepareStat.setString(2, newUserDto.getLastname());
+			prepareStat.setString(3, newUserDto.getFirstname());
+			prepareStat.setString(4, newUserDto.getEmail());
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
 	
+		return true;
+	}
+
+	public boolean deleteUser(String userId){
+		log("deleteUser(...) - userId: " + userId);
+		try{
+			String deleteStatement = 
+					"delete from workflowdb.user "
+					+ "where userID = ?";
+			prepareStat = workflowDbConnection.prepareStatement(deleteStatement);
+			prepareStat.setString(1, userId);
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
 	
 	private static void log(String string) {
 		System.out.println(string);
