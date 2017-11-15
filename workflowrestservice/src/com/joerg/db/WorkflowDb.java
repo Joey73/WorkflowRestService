@@ -9,16 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.joerg.rest.ProcessData;
+import com.joerg.rest.dtos.GroupDto;
+import com.joerg.rest.dtos.GroupListDto;
 import com.joerg.rest.dtos.ProcessDataDto;
 import com.joerg.rest.dtos.ProcessDataDtoList;
+import com.joerg.rest.dtos.RightDto;
+import com.joerg.rest.dtos.RightListDto;
 import com.joerg.rest.dtos.UiComponentSettingsDto;
 import com.joerg.rest.dtos.UiComponentSettingsListDto;
 import com.joerg.rest.dtos.UserDto;
 import com.joerg.rest.dtos.UserListDto;
 
 public class WorkflowDb {
-	public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
-	//public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
+	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
+	public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
 	public static final String USER = "root";
 	public static final String PASSWORD = "12345";
 
@@ -349,6 +353,248 @@ public class WorkflowDb {
 					+ "where userID = ?";
 			prepareStat = workflowDbConnection.prepareStatement(deleteStatement);
 			prepareStat.setString(1, userId);
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
+	
+	public RightListDto getAllRights() {
+		RightListDto rightListDto = new RightListDto();
+		try {
+			String selectStatement = "SELECT * FROM workflowdb.right";
+ 
+			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
+ 
+			ResultSet rs = prepareStat.executeQuery();
+ 
+			while (rs.next()) {
+				rightListDto.addRightDto(
+					new RightDto(
+						rs.getString("rightId"),
+						rs.getString("description")
+					)
+				);
+
+				String rightId = rs.getString("rightId");
+				String description = rs.getString("description");
+ 
+				System.out.format("%s, %s\n", rightId, description);
+			}
+			//workflowDbConnection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return rightListDto; 
+	}
+	
+	public RightDto getRight(String rightId) {
+		RightDto rightDto = new RightDto();
+		try{
+			String selectStatement = "Select * from workflowdb.right where rightID = '" + rightId + "'";
+			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
+			 
+			ResultSet rs = prepareStat.executeQuery();
+			
+			while (rs.next()) {
+				rightDto = new RightDto(
+						rs.getString("rightId"),
+						rs.getString("description")
+				);
+
+				String uId = rs.getString("rightId");
+				String description = rs.getString("description");
+ 
+				System.out.format("%s, %s\n", uId, description);
+			}
+			//workflowDbConnection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return rightDto;
+	}
+	
+	public boolean updateRight(RightDto newRightDto){
+		log(newRightDto.getRightId() + " " + newRightDto.getDescription());
+		try{
+			String updateStatement = 
+					"update workflowdb.right "
+					+ "set description = ? "
+					+ "where rightID = ?";
+			prepareStat = workflowDbConnection.prepareStatement(updateStatement);
+			prepareStat.setString(1, newRightDto.getDescription());
+			prepareStat.setString(2, newRightDto.getRightId());
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
+	
+	public boolean addRight(RightDto newRightDto){
+		log(newRightDto.getRightId() + " " + newRightDto.getDescription());
+		try{
+			String insertStatement = 
+					"insert into workflowdb.right "
+					+ "(rightID, description)"
+					+ "values (?, ?)";
+			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
+			prepareStat.setString(1, newRightDto.getRightId());
+			prepareStat.setString(2, newRightDto.getDescription());
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
+
+	public boolean deleteRight(String rightId){
+		log("deleteRight(...) - rightId: " + rightId);
+		try{
+			String deleteStatement = 
+					"delete from workflowdb.right "
+					+ "where rightID = ?";
+			prepareStat = workflowDbConnection.prepareStatement(deleteStatement);
+			prepareStat.setString(1, rightId);
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
+
+	public GroupListDto getAllGroups() {
+		GroupListDto groupListDto = new GroupListDto();
+		try {
+			String selectStatement = "SELECT * FROM workflowdb.group";
+ 
+			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
+ 
+			ResultSet rs = prepareStat.executeQuery();
+ 
+			while (rs.next()) {
+				groupListDto.addGroupDto(
+					new GroupDto(
+						rs.getString("groupId"),
+						rs.getString("description")
+					)
+				);
+
+				String groupId = rs.getString("groupId");
+				String description = rs.getString("description");
+ 
+				System.out.format("%s, %s\n", groupId, description);
+			}
+			//workflowDbConnection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return groupListDto; 
+	}
+	
+	public GroupDto getGroup(String groupId) {
+		GroupDto groupDto = new GroupDto();
+		try{
+			String selectStatement = "Select * from workflowdb.group where groupID = '" + groupId + "'";
+			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
+			 
+			ResultSet rs = prepareStat.executeQuery();
+			
+			while (rs.next()) {
+				groupDto = new GroupDto(
+						rs.getString("groupId"),
+						rs.getString("description")
+				);
+
+				String uId = rs.getString("groupId");
+				String description = rs.getString("description");
+ 
+				System.out.format("%s, %s\n", uId, description);
+			}
+			//workflowDbConnection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return groupDto;
+	}
+	
+	public boolean updateGroup(GroupDto newGroupDto){
+		log(newGroupDto.getGroupId() + " " + newGroupDto.getDescription());
+		try{
+			String updateStatement = 
+					"update workflowdb.group "
+					+ "set description = ? "
+					+ "where groupID = ?";
+			prepareStat = workflowDbConnection.prepareStatement(updateStatement);
+			prepareStat.setString(1, newGroupDto.getDescription());
+			prepareStat.setString(2, newGroupDto.getGroupId());
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
+	
+	public boolean addGroup(GroupDto newGroupDto){
+		log(newGroupDto.getGroupId() + " " + newGroupDto.getDescription());
+		try{
+			String insertStatement = 
+					"insert into workflowdb.group "
+					+ "(groupID, description)"
+					+ "values (?, ?)";
+			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
+			prepareStat.setString(1, newGroupDto.getGroupId());
+			prepareStat.setString(2, newGroupDto.getDescription());
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
+
+	public boolean deleteGroup(String groupId){
+		log("deleteGroup(...) - groupId: " + groupId);
+		try{
+			String deleteStatement = 
+					"delete from workflowdb.group "
+					+ "where groupID = ?";
+			prepareStat = workflowDbConnection.prepareStatement(deleteStatement);
+			prepareStat.setString(1, groupId);
 
 			prepareStat.executeUpdate();
 	      
