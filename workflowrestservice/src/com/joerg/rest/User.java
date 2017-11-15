@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import com.joerg.db.WorkflowDb;
 import com.joerg.db.WorkflowDbDummyData;
+import com.joerg.rest.dtos.ProcessDataDto;
 import com.joerg.rest.dtos.UserDto;
 import com.joerg.rest.dtos.UserListDto;
 
@@ -81,22 +82,18 @@ public class User {
 	}
 	
 	@DELETE
-    @Path("/delete")
+    @Path("/delete/{userId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteUser(UserDto userDto) {
-		//http://localhost:18080/workflowrestservice/rest/user/add
-		if(userDto == null) {
-			return Response.status(204).build();
-		}
-		System.out.println("userDto.getUserId(): " + userDto.getUserId());
-		System.out.println("userDto.getLastname(): " + userDto.getLastname());
-		System.out.println("userDto.getFirstname(): " + userDto.getFirstname());
-		System.out.println("userDto.getEmail(): " + userDto.getEmail());
+	public void deleteUser(@PathParam("userId") String userId) {
+		//http://localhost:18080/workflowrestservice/rest/user/delete/{userId}
+//		if(userId == null) {
+//			return Response.status(204).build();
+//		}
+		System.out.println("userId(): " + userId);
 		
 		WorkflowDb workflowDb = new WorkflowDb();
-		workflowDb.deleteUser(userDto.getUserId());
+		workflowDb.deleteUser(userId);
 		
-		return Response.status(200).entity(userDto).build();
+//		return Response.status(200).entity("Deleted").build();
 	}
 }

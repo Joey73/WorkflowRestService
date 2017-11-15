@@ -17,8 +17,8 @@ import com.joerg.rest.dtos.UserDto;
 import com.joerg.rest.dtos.UserListDto;
 
 public class WorkflowDb {
-	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
-	public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
+	public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
+	//public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
 	public static final String USER = "root";
 	public static final String PASSWORD = "12345";
 
