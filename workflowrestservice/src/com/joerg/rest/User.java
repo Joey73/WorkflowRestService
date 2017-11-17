@@ -50,9 +50,9 @@ public class User {
 		if(userDto == null) {
 			return Response.status(204).build();
 		}
-		System.out.println("userDto.getUserId(): " + userDto.getUserId());
-		System.out.println("userDto.getLastname(): " + userDto.getLastname());
-		System.out.println("userDto.getFirstname(): " + userDto.getFirstname());
+		System.out.println("userDto.getUserId(): " + userDto.getId());
+		System.out.println("userDto.getLastname(): " + userDto.getLastName());
+		System.out.println("userDto.getFirstname(): " + userDto.getFirstName());
 		System.out.println("userDto.getEmail(): " + userDto.getEmail());
 		
 		WorkflowDb workflowDb = new WorkflowDb();
@@ -70,9 +70,9 @@ public class User {
 		if(userDto == null) {
 			return Response.status(204).build();
 		}
-		System.out.println("userDto.getUserId(): " + userDto.getUserId());
-		System.out.println("userDto.getLastname(): " + userDto.getLastname());
-		System.out.println("userDto.getFirstname(): " + userDto.getFirstname());
+		System.out.println("userDto.getUserId(): " + userDto.getId());
+		System.out.println("userDto.getLastname(): " + userDto.getLastName());
+		System.out.println("userDto.getFirstname(): " + userDto.getFirstName());
 		System.out.println("userDto.getEmail(): " + userDto.getEmail());
 		
 		WorkflowDb workflowDb = new WorkflowDb();

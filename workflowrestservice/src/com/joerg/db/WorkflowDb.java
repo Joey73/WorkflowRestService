@@ -21,8 +21,8 @@ import com.joerg.rest.dtos.UserDto;
 import com.joerg.rest.dtos.UserListDto;
 
 public class WorkflowDb {
-	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
-	public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
+	public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
+	//public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
 	public static final String USER = "root";
 	public static final String PASSWORD = "12345";
 
@@ -296,7 +296,7 @@ public class WorkflowDb {
 	}
 	
 	public boolean updateUser(UserDto newUserDto){
-		log(newUserDto.getUserId() + " " + newUserDto.getLastname() + " " + newUserDto.getFirstname() + " " + newUserDto.getEmail());
+		log(newUserDto.getId() + " " + newUserDto.getLastName() + " " + newUserDto.getFirstName() + " " + newUserDto.getEmail());
 		try{
 			String updateStatement = 
 					"update workflowdb.user "
@@ -305,10 +305,10 @@ public class WorkflowDb {
 					+ "email = ? "
 					+ "where userID = ?";
 			prepareStat = workflowDbConnection.prepareStatement(updateStatement);
-			prepareStat.setString(1, newUserDto.getLastname());
-			prepareStat.setString(2, newUserDto.getFirstname());
+			prepareStat.setString(1, newUserDto.getLastName());
+			prepareStat.setString(2, newUserDto.getFirstName());
 			prepareStat.setString(3, newUserDto.getEmail());
-			prepareStat.setString(4, newUserDto.getUserId());
+			prepareStat.setString(4, newUserDto.getId());
 
 			prepareStat.executeUpdate();
 	      
@@ -322,16 +322,16 @@ public class WorkflowDb {
 	}
 	
 	public boolean addUser(UserDto newUserDto){
-		log(newUserDto.getUserId() + " " + newUserDto.getLastname() + " " + newUserDto.getFirstname() + " " + newUserDto.getEmail());
+		log(newUserDto.getId() + " " + newUserDto.getLastName() + " " + newUserDto.getFirstName() + " " + newUserDto.getEmail());
 		try{
 			String insertStatement = 
 					"insert into workflowdb.user "
 					+ "(userID, lastname, firstname, email)"
 					+ "values (?, ?, ?, ?)";
 			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
-			prepareStat.setString(1, newUserDto.getUserId());
-			prepareStat.setString(2, newUserDto.getLastname());
-			prepareStat.setString(3, newUserDto.getFirstname());
+			prepareStat.setString(1, newUserDto.getId());
+			prepareStat.setString(2, newUserDto.getLastName());
+			prepareStat.setString(3, newUserDto.getFirstName());
 			prepareStat.setString(4, newUserDto.getEmail());
 
 			prepareStat.executeUpdate();
