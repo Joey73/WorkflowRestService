@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 import com.joerg.db.WorkflowDb;
 import com.joerg.rest.dtos.ProcessDataDto;
 import com.joerg.rest.dtos.ProcessDataDtoList;
+import com.joerg.rest.dtos.RightDto;
 import com.joerg.rest.dtos.UiComponentSettingsDto;
 
 @Path("/processdata")
@@ -35,6 +36,22 @@ public class ProcessData {
 
 		WorkflowDb workflowDb = new WorkflowDb();
 		return workflowDb.getProcessData(processInstanceId);
+	}
+
+	@POST
+    @Path("/add/{processInstanceId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addProcessData(@PathParam("processInstanceId") String processInstanceId) {
+		//http://localhost:18080/workflowrestservice/rest/processdata/add
+		if(processInstanceId == null) {
+			return Response.status(204).build();
+		}
+		System.out.println("processInstanceId: " + processInstanceId);
+		
+		WorkflowDb workflowDb = new WorkflowDb();
+		workflowDb.addProcessData(processInstanceId);
+		
+		return Response.status(200).entity("{ \"processInstanceId\"=\"" + processInstanceId + "\" }").build();
 	}
 	
 	@POST

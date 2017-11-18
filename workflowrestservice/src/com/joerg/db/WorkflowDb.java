@@ -115,6 +115,27 @@ public class WorkflowDb {
 		return processDataDto;
 	}
 
+	public boolean addProcessData(String processInstanceId){
+		log("addProcessData(...) - processInstanceId: " + processInstanceId);
+		try{
+			String insertStatement = 
+					"insert into workflowdb.processdata "
+					+ "(processInstanceID)"
+					+ "values (?)";
+			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
+			prepareStat.setString(1, processInstanceId);
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
+
 	public boolean updateProcessData(ProcessDataDto newProcessDataDto){
 		try{
 			String updateStatement = 
@@ -152,14 +173,14 @@ public class WorkflowDb {
 			while (rs.next()) {
 				uiComponentSettingsListDto.addUiComponentSettingsDto(
 					new UiComponentSettingsDto(
-						rs.getString("componentId"),
+						rs.getString("componentID"),
 						(rs.getInt("visible") == 1),
 						(rs.getInt("enabled") == 1),
 						(rs.getInt("required") == 1)
 					)
 				);
 
-				String componentId = rs.getString("componentId");
+				String componentId = rs.getString("componentID");
 				boolean visible = (rs.getInt("visible") == 1);
 				boolean enabled = (rs.getInt("enabled") == 1);
 				boolean required = (rs.getInt("required") == 1);
@@ -184,13 +205,13 @@ public class WorkflowDb {
 			
 			while (rs.next()) {
 				uiComponentSettingsDto = new UiComponentSettingsDto(
-						rs.getString("componentId"),
+						rs.getString("componentID"),
 						(rs.getInt("visible") == 1),
 						(rs.getInt("enabled") == 1),
 						(rs.getInt("required") == 1)
 				);
 
-				String compId = rs.getString("componentId");
+				String compId = rs.getString("componentID");
 				boolean visible = (rs.getInt("visible") == 1);
 				boolean enabled = (rs.getInt("enabled") == 1);
 				boolean required = (rs.getInt("required") == 1);
