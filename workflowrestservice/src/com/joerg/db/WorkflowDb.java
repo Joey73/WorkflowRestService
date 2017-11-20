@@ -21,8 +21,8 @@ import com.joerg.rest.dtos.UserDto;
 import com.joerg.rest.dtos.UserListDto;
 
 public class WorkflowDb {
-	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
-	public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
+	public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
+	//public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
 	public static final String USER = "root";
 	public static final String PASSWORD = "12345";
 
@@ -426,6 +426,36 @@ public class WorkflowDb {
 		RightDto rightDto = new RightDto();
 		try{
 			String selectStatement = "Select * from workflowdb.right where rightID = '" + rightId + "'";
+			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
+			 
+			ResultSet rs = prepareStat.executeQuery();
+			
+			while (rs.next()) {
+				rightDto = new RightDto(
+						rs.getString("rightId"),
+						rs.getString("description")
+				);
+
+				String uId = rs.getString("rightId");
+				String description = rs.getString("description");
+ 
+				System.out.format("%s, %s\n", uId, description);
+			}
+			//workflowDbConnection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return rightDto;
+	}
+
+	public RightDto getRightViaUser(String userId) {
+		RightDto rightDto = new RightDto();
+		try{
+			String selectStatement = "select r.*"
+					+ " from workflowdb.right r"
+					+ " inner join workflowdb.user_right ur on r.rightID = ur.rightId"
+					+ " where ur.userId = '" + userId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
 			ResultSet rs = prepareStat.executeQuery();

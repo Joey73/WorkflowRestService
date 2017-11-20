@@ -37,7 +37,17 @@ public class Right {
 		WorkflowDb workflowDb = new WorkflowDb();
 		return workflowDb.getRight(rightId);
 	}
-	
+
+	@GET
+	@Path("/getviauser/{userId}")
+	@Produces("application/json")
+	public RightDto getRightViaUser(@PathParam("userId") String userId){
+		System.out.println("rightId: " + userId);
+
+		WorkflowDb workflowDb = new WorkflowDb();
+		return workflowDb.getRightViaUser(userId);
+	}
+
 	@POST
     @Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
