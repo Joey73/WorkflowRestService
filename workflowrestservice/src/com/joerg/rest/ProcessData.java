@@ -13,7 +13,7 @@ import com.joerg.db.WorkflowDb;
 import com.joerg.rest.dtos.ProcessDataDto;
 import com.joerg.rest.dtos.ProcessDataDtoList;
 import com.joerg.rest.dtos.RightDto;
-import com.joerg.rest.dtos.UiComponentSettingsDto;
+import com.joerg.rest.dtos.RightUiComponentDto;
 
 @Path("/processdata")
 public class ProcessData {
@@ -63,10 +63,10 @@ public class ProcessData {
 		if(processDataDto == null) {
 			return Response.status(204).build();
 		}
-		System.out.println("uiComponentSettingsDto.getProcessInstanceId(): " + processDataDto.getProcessInstanceId());
-		System.out.println("uiComponentSettingsDto.getField1(): " + processDataDto.getField1());
-		System.out.println("uiComponentSettingsDto.getField2(): " + processDataDto.getField2());
-		System.out.println("uiComponentSettingsDto.getField3(): " + processDataDto.getField3());
+		System.out.println("processDataDto.getProcessInstanceId(): " + processDataDto.getProcessInstanceId());
+		System.out.println("processDataDto.getField1(): " + processDataDto.getField1());
+		System.out.println("processDataDto.getField2(): " + processDataDto.getField2());
+		System.out.println("processDataDto.getField3(): " + processDataDto.getField3());
 		
 		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.updateProcessData(processDataDto);

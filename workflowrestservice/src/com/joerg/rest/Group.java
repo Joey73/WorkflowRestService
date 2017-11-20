@@ -60,7 +60,7 @@ public class Group {
     @Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateUiComponentSetting(GroupDto groupDto) {
+	public Response updateGroup(GroupDto groupDto) {
 		//http://localhost:18080/workflowrestservice/rest/group/update
 		if(groupDto == null) {
 			return Response.status(204).build();

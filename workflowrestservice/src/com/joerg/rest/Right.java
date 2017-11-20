@@ -60,7 +60,7 @@ public class Right {
     @Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateUiComponentSetting(RightDto rightDto) {
+	public Response updateRight(RightDto rightDto) {
 		//http://localhost:18080/workflowrestservice/rest/right/update
 		if(rightDto == null) {
 			return Response.status(204).build();

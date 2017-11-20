@@ -15,14 +15,14 @@ import com.joerg.rest.dtos.ProcessDataDto;
 import com.joerg.rest.dtos.ProcessDataDtoList;
 import com.joerg.rest.dtos.RightDto;
 import com.joerg.rest.dtos.RightListDto;
-import com.joerg.rest.dtos.UiComponentSettingsDto;
-import com.joerg.rest.dtos.UiComponentSettingsListDto;
+import com.joerg.rest.dtos.RightUiComponentDto;
+import com.joerg.rest.dtos.RightUiComponentListDto;
 import com.joerg.rest.dtos.UserDto;
 import com.joerg.rest.dtos.UserListDto;
 
 public class WorkflowDb {
-	public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
-	//public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
+	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
+	public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
 	public static final String USER = "root";
 	public static final String PASSWORD = "12345";
 
@@ -161,51 +161,55 @@ public class WorkflowDb {
 		return true;
 	}
 	
-	public UiComponentSettingsListDto getAllUiComponentSettings() {
-		UiComponentSettingsListDto uiComponentSettingsListDto = new UiComponentSettingsListDto();
+	public RightUiComponentListDto getAllRightUiComponents(String rightId) {
+		RightUiComponentListDto rightUiComponentListDto = new RightUiComponentListDto();
 		try {
-			String selectStatement = "SELECT * FROM workflowdb.uicomponentsettings";
+			String selectStatement = "SELECT * FROM workflowdb.right_uicomponent WHERE rightId = ?";
  
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
+			prepareStat.setString(1, rightId);
  
 			ResultSet rs = prepareStat.executeQuery();
  
 			while (rs.next()) {
-				uiComponentSettingsListDto.addUiComponentSettingsDto(
-					new UiComponentSettingsDto(
-						rs.getString("componentID"),
+				rightUiComponentListDto.addRightUiComponentDto(
+					new RightUiComponentDto(
+						rs.getString("rightId"),
+						rs.getString("uicomponentId"),
 						(rs.getInt("visible") == 1),
 						(rs.getInt("enabled") == 1),
 						(rs.getInt("required") == 1)
 					)
 				);
 
-				String componentId = rs.getString("componentID");
+				rightId = rs.getString("rightId");
+				String uicomponentId = rs.getString("uicomponentId");
 				boolean visible = (rs.getInt("visible") == 1);
 				boolean enabled = (rs.getInt("enabled") == 1);
 				boolean required = (rs.getInt("required") == 1);
  
-				System.out.format("%s, %s, %s, %s\n", componentId, visible, enabled, required);
+				System.out.format("%s, %s, %s, %s, %s\n", rightId, uicomponentId, visible, enabled, required);
 			}
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return uiComponentSettingsListDto; 
+		return rightUiComponentListDto; 
 	}
 	
-	public UiComponentSettingsDto getUiComponentSettings(String componentId) {
-		UiComponentSettingsDto uiComponentSettingsDto = new UiComponentSettingsDto();
+	public RightUiComponentDto getRightUiComponent(String uicomponentId) {
+		RightUiComponentDto rightUiComponentDto = new RightUiComponentDto();
 		try{
-			String selectStatement = "Select * from workflowdb.uicomponentsettings where componentID = '" + componentId + "'";
+			String selectStatement = "Select * from workflowdb.right_uicomponent where uicomponentId = '" + uicomponentId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
 			ResultSet rs = prepareStat.executeQuery();
 			
 			while (rs.next()) {
-				uiComponentSettingsDto = new UiComponentSettingsDto(
-						rs.getString("componentID"),
+				rightUiComponentDto = new RightUiComponentDto(
+						rs.getString("rightId"),
+						rs.getString("uicomponentId"),
 						(rs.getInt("visible") == 1),
 						(rs.getInt("enabled") == 1),
 						(rs.getInt("required") == 1)
@@ -223,22 +227,23 @@ public class WorkflowDb {
 			e.printStackTrace();
 		}
 		
-		return uiComponentSettingsDto;
+		return rightUiComponentDto;
 	}
 	
-	public boolean updateUiComponentSetting(UiComponentSettingsDto newUiComponentSettingsDto){
+	public boolean updateRightUiComponent(RightUiComponentDto newRightUiComponentDto){
 		try{
 			String updateStatement = 
-					"update workflowdb.uicomponentsettings "
+					"update workflowdb.right_uicomponent "
 					+ "set enabled = ?, "
 					+ "required = ?, "
 					+ "visible = ? "
-					+ "where componentID = ?";
+					+ "where componentId = ? and rightId = ?";
 			prepareStat = workflowDbConnection.prepareStatement(updateStatement);
-			prepareStat.setInt(1, newUiComponentSettingsDto.isEnabled() ? 1 : 0);
-			prepareStat.setInt(2, newUiComponentSettingsDto.isRequired() ? 1 : 0);
-			prepareStat.setInt(3, newUiComponentSettingsDto.isVisible() ? 1 : 0);
-			prepareStat.setString(4, newUiComponentSettingsDto.getComponentId());
+			prepareStat.setInt(1, newRightUiComponentDto.isEnabled() ? 1 : 0);
+			prepareStat.setInt(2, newRightUiComponentDto.isRequired() ? 1 : 0);
+			prepareStat.setInt(3, newRightUiComponentDto.isVisible() ? 1 : 0);
+			prepareStat.setString(4, newRightUiComponentDto.getUicomponentId());
+			prepareStat.setString(5, newRightUiComponentDto.getRightId());
 
 			prepareStat.executeUpdate();
 	      

@@ -3,29 +3,39 @@ package com.joerg.rest.dtos;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class UiComponentSettingsDto {
-	private String componentId;
+public class RightUiComponentDto {
+	private String rightId;
+	private String uicomponentId;
 	private boolean visible;
 	private boolean enabled;
 	private boolean required;
 	
-	public UiComponentSettingsDto(){
+	public RightUiComponentDto(){
 		super();
 	}
 	
-	public UiComponentSettingsDto(String componentId, boolean visible, boolean enabled, boolean required){
-		this.componentId = componentId;
+	public RightUiComponentDto(String rightId, String uicomponentId, boolean visible, boolean enabled, boolean required){
+		this.rightId = rightId;
+		this.uicomponentId = uicomponentId;
 		this.visible = visible;
 		this.enabled = enabled;
 		this.required = required;
 	}
 
-	public String getComponentId() {
-		return componentId;
+	public String getRightId() {
+		return rightId;
 	}
 
-	public void setComponentId(String componentId) {
-		this.componentId = componentId;
+	public void setRightId(String rightId) {
+		this.rightId = rightId;
+	}
+
+	public String getUicomponentId() {
+		return uicomponentId;
+	}
+
+	public void setUicomponentId(String uicomponentId) {
+		this.uicomponentId = uicomponentId;
 	}
 
 	public boolean isVisible() {

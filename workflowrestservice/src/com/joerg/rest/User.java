@@ -65,7 +65,7 @@ public class User {
     @Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateUiComponentSetting(UserDto userDto) {
+	public Response updateUser(UserDto userDto) {
 		//http://localhost:18080/workflowrestservice/rest/user/update
 		if(userDto == null) {
 			return Response.status(204).build();
