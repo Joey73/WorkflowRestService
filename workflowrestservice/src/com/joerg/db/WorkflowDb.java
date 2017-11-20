@@ -215,7 +215,7 @@ public class WorkflowDb {
 						(rs.getInt("required") == 1)
 				);
 
-				String compId = rs.getString("componentID");
+				String compId = rs.getString("uicomponentId");
 				boolean visible = (rs.getInt("visible") == 1);
 				boolean enabled = (rs.getInt("enabled") == 1);
 				boolean required = (rs.getInt("required") == 1);
