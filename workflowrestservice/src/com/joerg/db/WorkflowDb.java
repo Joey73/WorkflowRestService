@@ -198,10 +198,10 @@ public class WorkflowDb {
 		return rightUiComponentListDto; 
 	}
 	
-	public RightUiComponentDto getRightUiComponent(String uicomponentId) {
+	public RightUiComponentDto getRightUiComponent(String rightId, String uicomponentId) {
 		RightUiComponentDto rightUiComponentDto = new RightUiComponentDto();
 		try{
-			String selectStatement = "Select * from workflowdb.right_uicomponent where uicomponentId = '" + uicomponentId + "'";
+			String selectStatement = "Select * from workflowdb.right_uicomponent where rightid = '" + rightId + "' and uicomponentId = '" + uicomponentId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
 			ResultSet rs = prepareStat.executeQuery();
@@ -215,12 +215,13 @@ public class WorkflowDb {
 						(rs.getInt("required") == 1)
 				);
 
-				String compId = rs.getString("uicomponentId");
+				rightId = rs.getString("rightId");
+				uicomponentId = rs.getString("uicomponentId");
 				boolean visible = (rs.getInt("visible") == 1);
 				boolean enabled = (rs.getInt("enabled") == 1);
 				boolean required = (rs.getInt("required") == 1);
  
-				System.out.format("%s, %s, %s, %s\n", compId, visible, enabled, required);
+				System.out.format("%s, %s, %s, %s, %s\n", rightId, uicomponentId, visible, enabled, required);
 			}
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
@@ -237,7 +238,7 @@ public class WorkflowDb {
 					+ "set enabled = ?, "
 					+ "required = ?, "
 					+ "visible = ? "
-					+ "where componentId = ? and rightId = ?";
+					+ "where uicomponentId = ? and rightId = ?";
 			prepareStat = workflowDbConnection.prepareStatement(updateStatement);
 			prepareStat.setInt(1, newRightUiComponentDto.isEnabled() ? 1 : 0);
 			prepareStat.setInt(2, newRightUiComponentDto.isRequired() ? 1 : 0);

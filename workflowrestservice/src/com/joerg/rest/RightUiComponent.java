@@ -31,14 +31,14 @@ public class RightUiComponent {
 	}
 
 	@GET
-	@Path("/get/{componentId}")
+	@Path("/get/{rightId}/{uicomponentId}")
 	@Produces("application/json")
-	public RightUiComponentDto getRightUiComponents(@PathParam("componentId") String componentId){
+	public RightUiComponentDto getRightUiComponents(@PathParam("rightId") String rightId, @PathParam("uicomponentId") String uicomponentId){
 		//http://localhost:18080/workflowrestservice/rest/rightuicomponent/get/{componentId}
-		System.out.println("componentId: " + componentId);
+		System.out.println("componentId: " + uicomponentId);
 
 		WorkflowDb workflowDb = new WorkflowDb();
-		return workflowDb.getRightUiComponent(componentId);
+		return workflowDb.getRightUiComponent(rightId, uicomponentId);
 	}
 	
 	@POST
