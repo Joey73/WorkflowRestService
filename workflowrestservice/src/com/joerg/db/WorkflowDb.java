@@ -19,10 +19,12 @@ import com.joerg.rest.dtos.RightUiComponentDto;
 import com.joerg.rest.dtos.RightUiComponentListDto;
 import com.joerg.rest.dtos.UserDto;
 import com.joerg.rest.dtos.UserListDto;
+import com.joerg.rest.dtos.UserRightDto;
+import com.joerg.rest.dtos.UserRightListDto;
 
 public class WorkflowDb {
-	public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
-	//public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
+	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
+	public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
 	public static final String USER = "root";
 	public static final String PASSWORD = "12345";
 
@@ -197,6 +199,37 @@ public class WorkflowDb {
 		
 		return rightUiComponentListDto; 
 	}
+
+	public UserRightListDto getAllUserRights(String userId) {
+		UserRightListDto userRightListDto = new UserRightListDto();
+		try {
+			String selectStatement = "SELECT * FROM workflowdb.user_right WHERE userId = ?";
+ 
+			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
+			prepareStat.setString(1, userId);
+ 
+			ResultSet rs = prepareStat.executeQuery();
+ 
+			while (rs.next()) {
+				userRightListDto.addUserRightDto(
+					new UserRightDto(
+						rs.getString("userId"),
+						rs.getString("rightId")
+					)
+				);
+
+				userId = rs.getString("userId");
+				String rightId = rs.getString("rightId");
+ 
+				System.out.format("%s, %s\n", userId, rightId);
+			}
+			//workflowDbConnection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return userRightListDto; 
+	}
 	
 	public RightUiComponentDto getRightUiComponent(String rightId, String uicomponentId) {
 		RightUiComponentDto rightUiComponentDto = new RightUiComponentDto();
@@ -230,7 +263,7 @@ public class WorkflowDb {
 		
 		return rightUiComponentDto;
 	}
-	
+
 	public boolean updateRightUiComponent(RightUiComponentDto newRightUiComponentDto){
 		try{
 			String updateStatement = 
@@ -523,6 +556,28 @@ public class WorkflowDb {
 		return true;
 	}
 
+	public boolean addUserRight(UserRightDto newUserRightDto){
+		log("newUserRightDto.getUserId():" + newUserRightDto.getUserId() + ", newUserRightDto.getRightId(): " + newUserRightDto.getRightId());
+		try{
+			String insertStatement = 
+					"insert into workflowdb.user_right "
+					+ "(userId, rightId)"
+					+ "values (?, ?)";
+			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
+			prepareStat.setString(1, newUserRightDto.getUserId());
+			prepareStat.setString(2, newUserRightDto.getRightId());
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
+	
 	public boolean deleteRight(String rightId){
 		log("deleteRight(...) - rightId: " + rightId);
 		try{
@@ -543,6 +598,27 @@ public class WorkflowDb {
 		return true;
 	}
 
+	public boolean deleteUserRight(String userId, String rightId){
+		log("userId:" + userId + ", rightId: " + rightId);
+		try{
+			String deleteStatement = 
+					"delete from workflowdb.user_right "
+					+ "where userId = ? and rightId = ?";
+			prepareStat = workflowDbConnection.prepareStatement(deleteStatement);
+			prepareStat.setString(1, userId);
+			prepareStat.setString(2, rightId);
+
+			prepareStat.executeUpdate();
+	      
+			//workflowDbConnection.close();
+	    }catch (Exception e){
+	        System.err.println("Got an exception! ");
+	        System.err.println(e.getMessage());
+	    }
+	
+		return true;
+	}
+	
 	public GroupListDto getAllGroups() {
 		GroupListDto groupListDto = new GroupListDto();
 		try {
