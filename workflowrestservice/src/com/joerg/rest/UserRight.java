@@ -10,8 +10,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joerg.db.WorkflowDb;
-import com.joerg.db.WorkflowDbDummyData;
 import com.joerg.rest.dtos.UserRightDto;
 import com.joerg.rest.dtos.UserRightListDto;
 
@@ -21,14 +22,17 @@ public class UserRight {
 	@GET
 	@Path("/getall/{userId}")
 	@Produces("application/json")
-	public Response getAllUserRights(@PathParam("userId") String userId){
+	public Response getAllUserRights(@PathParam("userId") String userId) throws JsonProcessingException{
 		if(userId == null) {
 			return Response.status(200).entity(new UserRightListDto()).build();
 		}
 		WorkflowDb workflowDb = new WorkflowDb();
 		UserRightListDto allUserRights = workflowDb.getAllUserRights(userId);
 		
-		return Response.status(200).entity(allUserRights).build();
+		ObjectMapper om = new ObjectMapper();
+		String valueAsString = om.writeValueAsString(allUserRights);
+		
+		return Response.status(200).entity(valueAsString).build();
 	}
 
 	@POST
