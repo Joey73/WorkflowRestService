@@ -43,18 +43,19 @@ public class ProcessData {
 	}
 
 	@POST
-    @Path("/add/{processInstanceId}")
-	public Response addProcessData(@PathParam("processInstanceId") String processInstanceId) {
-		if(processInstanceId == null) {
+    @Path("/add")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addProcessData(ProcessDataDto processDataDto) {
+		if(processDataDto == null) {
 			return Response.status(204).build();
 		}
-		System.out.println("processInstanceId: " + processInstanceId);
+		System.out.println("processDataDto.getProcessInstanceId(): " + processDataDto.getProcessInstanceId());
 		
 		WorkflowDb workflowDb = new WorkflowDb();
-		workflowDb.addProcessData(processInstanceId);
+		workflowDb.addProcessData(processDataDto);
 		
-		//return Response.status(200).entity("{ \"processInstanceId\"=\"" + processInstanceId + "\" }").build();
-		return Response.status(200).build();
+		return Response.status(200).entity(processDataDto).build();
 	}
 	
 	@POST

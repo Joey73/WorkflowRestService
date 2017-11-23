@@ -117,15 +117,15 @@ public class WorkflowDb {
 		return processDataDto;
 	}
 
-	public boolean addProcessData(String processInstanceId){
-		log("addProcessData(...) - processInstanceId: " + processInstanceId);
+	public boolean addProcessData(ProcessDataDto processDataDto){
+		log("addProcessData(...) - processDataDto.getProcessInstanceId(): " + processDataDto.getProcessInstanceId());
 		try{
 			String insertStatement = 
 					"insert into workflowdb.processdata "
 					+ "(processInstanceID)"
 					+ "values (?)";
 			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
-			prepareStat.setString(1, processInstanceId);
+			prepareStat.setString(1, processDataDto.getProcessInstanceId());
 
 			prepareStat.executeUpdate();
 	      
