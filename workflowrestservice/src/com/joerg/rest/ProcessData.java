@@ -44,7 +44,6 @@ public class ProcessData {
 
 	@POST
     @Path("/add/{processInstanceId}")
-	@Produces(MediaType.APPLICATION_JSON)
 	public Response addProcessData(@PathParam("processInstanceId") String processInstanceId) {
 		if(processInstanceId == null) {
 			return Response.status(204).build();
@@ -54,7 +53,8 @@ public class ProcessData {
 		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.addProcessData(processInstanceId);
 		
-		return Response.status(200).entity("{ \"processInstanceId\"=\"" + processInstanceId + "\" }").build();
+		//return Response.status(200).entity("{ \"processInstanceId\"=\"" + processInstanceId + "\" }").build();
+		return Response.status(200).build();
 	}
 	
 	@POST
