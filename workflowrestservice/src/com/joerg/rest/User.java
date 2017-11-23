@@ -11,6 +11,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joerg.db.WorkflowDb;
 import com.joerg.db.WorkflowDbDummyData;
 import com.joerg.rest.dtos.ProcessDataDto;
@@ -19,22 +21,23 @@ import com.joerg.rest.dtos.UserListDto;
 
 @Path("/user")
 public class User {
-
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
-	public UserListDto getAllUsers(){
-		//http://localhost:18080/workflowrestservice/rest/user/getall
-		
+	public Response getAllUsers() throws JsonProcessingException{
 		WorkflowDb workflowDb = new WorkflowDb();
-		return workflowDb.getAllUsers();
+		UserListDto allUsers = workflowDb.getAllUsers();
+		
+		ObjectMapper om = new ObjectMapper();
+		String valueAsString = om.writeValueAsString(allUsers);
+		
+		return Response.status(200).entity(valueAsString).build();
 	}
 
 	@GET
 	@Path("/get/{userId}")
 	@Produces("application/json")
 	public UserDto getUser(@PathParam("componentId") String userId){
-		//http://localhost:18080/workflowrestservice/rest/user/get/{userId}
 		System.out.println("userId: " + userId);
 
 		WorkflowDb workflowDb = new WorkflowDb();
@@ -46,7 +49,6 @@ public class User {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addUser(UserDto userDto) {
-		//http://localhost:18080/workflowrestservice/rest/user/add
 		if(userDto == null) {
 			return Response.status(204).build();
 		}
@@ -66,7 +68,6 @@ public class User {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateUser(UserDto userDto) {
-		//http://localhost:18080/workflowrestservice/rest/user/update
 		if(userDto == null) {
 			return Response.status(204).build();
 		}
@@ -85,15 +86,9 @@ public class User {
     @Path("/delete/{userId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteUser(@PathParam("userId") String userId) {
-		//http://localhost:18080/workflowrestservice/rest/user/delete/{userId}
-//		if(userId == null) {
-//			return Response.status(204).build();
-//		}
 		System.out.println("userId(): " + userId);
 		
 		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.deleteUser(userId);
-		
-//		return Response.status(200).entity("Deleted").build();
 	}
 }

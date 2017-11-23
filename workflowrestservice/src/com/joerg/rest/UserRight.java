@@ -18,7 +18,6 @@ import com.joerg.rest.dtos.UserRightListDto;
 
 @Path("/userright")
 public class UserRight {
-
 	@GET
 	@Path("/getall/{userId}")
 	@Produces("application/json")

@@ -9,6 +9,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joerg.db.WorkflowDb;
 import com.joerg.rest.dtos.ProcessDataDto;
 import com.joerg.rest.dtos.ProcessDataDtoList;
@@ -17,21 +19,23 @@ import com.joerg.rest.dtos.RightUiComponentDto;
 
 @Path("/processdata")
 public class ProcessData {
-
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
-	public ProcessDataDtoList getAllProcessData(){
-		//http://localhost:8080/workflowrestservice/rest/processdata/getall
+	public Response getAllProcessData() throws JsonProcessingException{
 		WorkflowDb workflowDb = new WorkflowDb();
-		return workflowDb.getAllProcessData();
+		ProcessDataDtoList allProcessData = workflowDb.getAllProcessData();
+		
+		ObjectMapper om = new ObjectMapper();
+		String valueAsString = om.writeValueAsString(allProcessData);
+		
+		return Response.status(200).entity(valueAsString).build();
 	}
 
 	@GET
 	@Path("/get/{processInstanceId}")
 	@Produces("application/json")
 	public ProcessDataDto getProcessData(@PathParam("processInstanceId") String processInstanceId){
-		//http://localhost:8080/workflowrestservice/rest/processdata/get/{processInstanceId}
 		System.out.println("processInstanceId: " + processInstanceId);
 
 		WorkflowDb workflowDb = new WorkflowDb();
@@ -42,7 +46,6 @@ public class ProcessData {
     @Path("/add/{processInstanceId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addProcessData(@PathParam("processInstanceId") String processInstanceId) {
-		//http://localhost:18080/workflowrestservice/rest/processdata/add
 		if(processInstanceId == null) {
 			return Response.status(204).build();
 		}
@@ -59,7 +62,6 @@ public class ProcessData {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateProcessData(ProcessDataDto processDataDto) {
-		//http://localhost:18080/workflowrestservice/rest/processdata/update
 		if(processDataDto == null) {
 			return Response.status(204).build();
 		}

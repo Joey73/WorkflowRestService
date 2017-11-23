@@ -11,6 +11,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joerg.db.WorkflowDb;
 import com.joerg.rest.dtos.RightDto;
 import com.joerg.rest.dtos.RightListDto;
@@ -20,18 +22,20 @@ public class Right {
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
-	public RightListDto getAllRights(){
-		//http://localhost:18080/workflowrestservice/rest/right/getall
-		
+	public Response getAllRights() throws JsonProcessingException{
 		WorkflowDb workflowDb = new WorkflowDb();
-		return workflowDb.getAllRights();
+		RightListDto allRights = workflowDb.getAllRights();
+		
+		ObjectMapper om = new ObjectMapper();
+		String valueAsString = om.writeValueAsString(allRights);
+		
+		return Response.status(200).entity(valueAsString).build();
 	}
 
 	@GET
 	@Path("/get/{rightId}")
 	@Produces("application/json")
 	public RightDto getRight(@PathParam("componentId") String rightId){
-		//http://localhost:18080/workflowrestservice/rest/right/get/{rightId}
 		System.out.println("rightId: " + rightId);
 
 		WorkflowDb workflowDb = new WorkflowDb();
@@ -53,7 +57,6 @@ public class Right {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addRight(RightDto rightDto) {
-		//http://localhost:18080/workflowrestservice/rest/right/add
 		if(rightDto == null) {
 			return Response.status(204).build();
 		}
@@ -71,7 +74,6 @@ public class Right {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateRight(RightDto rightDto) {
-		//http://localhost:18080/workflowrestservice/rest/right/update
 		if(rightDto == null) {
 			return Response.status(204).build();
 		}
@@ -88,15 +90,9 @@ public class Right {
     @Path("/delete/{rightId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteRight(@PathParam("rightId") String rightId) {
-		//http://localhost:18080/workflowrestservice/rest/right/delete/{rightId}
-//		if(rightId == null) {
-//			return Response.status(204).build();
-//		}
 		System.out.println("rightId(): " + rightId);
 		
 		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.deleteRight(rightId);
-		
-//		return Response.status(200).entity("Deleted").build();
 	}
 }

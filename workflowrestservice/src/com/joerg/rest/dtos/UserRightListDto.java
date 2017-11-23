@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat.Feature;
 
 @XmlRootElement(name = "responseList")
 public class UserRightListDto {
-	@JsonFormat(with = Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+	//@JsonFormat(with = Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 	private List<UserRightDto> userRightListDto = new ArrayList<UserRightDto>();
 
 	public UserRightListDto() {

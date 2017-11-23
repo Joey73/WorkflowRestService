@@ -9,6 +9,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joerg.db.WorkflowDb;
 import com.joerg.db.WorkflowDbDummyData;
 import com.joerg.rest.dtos.RightUiComponentDto;
@@ -16,25 +18,26 @@ import com.joerg.rest.dtos.RightUiComponentListDto;
 
 @Path("/rightuicomponent")
 public class RightUiComponent {
-
 	@GET
 	@Path("/getall/{rightId}")
 	@Produces("application/json")
-	public RightUiComponentListDto getAllRightUiComponents(@PathParam("rightId") String rightId){
-		//http://localhost:18080/workflowrestservice/rest/rightuicomponent/getall
+	public Response getAllRightUiComponents(@PathParam("rightId") String rightId) throws JsonProcessingException{
 		if(rightId == null) {
-			return new RightUiComponentListDto();
+			return Response.status(204).build();
 		}
 		WorkflowDb workflowDb = new WorkflowDb();
 		RightUiComponentListDto allRightUiComponents = workflowDb.getAllRightUiComponents(rightId);
-		return allRightUiComponents;
+		
+		ObjectMapper om = new ObjectMapper();
+		String valueAsString = om.writeValueAsString(allRightUiComponents);
+		
+		return Response.status(200).entity(valueAsString).build();
 	}
 
 	@GET
 	@Path("/get/{rightId}/{uicomponentId}")
 	@Produces("application/json")
 	public RightUiComponentDto getRightUiComponents(@PathParam("rightId") String rightId, @PathParam("uicomponentId") String uicomponentId){
-		//http://localhost:18080/workflowrestservice/rest/rightuicomponent/get/{componentId}
 		System.out.println("componentId: " + uicomponentId);
 
 		WorkflowDb workflowDb = new WorkflowDb();
@@ -46,7 +49,6 @@ public class RightUiComponent {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateRightUiComponent(RightUiComponentDto rightUiComponentDto) {
-		//http://localhost:18080/workflowrestservice/rest/rightuicomponent/update
 		if(rightUiComponentDto == null) {
 			return Response.status(204).build();
 		}
