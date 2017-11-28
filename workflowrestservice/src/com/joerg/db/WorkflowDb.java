@@ -24,9 +24,12 @@ import com.joerg.rest.dtos.UserRightListDto;
 
 public class WorkflowDb {
 	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
-	public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
+	public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/resisdb";
+	//public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
 	public static final String USER = "root";
 	public static final String PASSWORD = "12345";
+	//public static final String DB = "workflowdb";
+	public static final String DB = "resisdb";
 
 	static Connection workflowDbConnection = null;
 	static PreparedStatement prepareStat = null;
@@ -67,7 +70,7 @@ public class WorkflowDb {
 	public ProcessDataDtoList getAllProcessData() {
 		ProcessDataDtoList processDataDtoList = new ProcessDataDtoList();
 		try {
-			String selectStatement = "SELECT * FROM workflowdb.processdata";
+			String selectStatement = "SELECT * FROM " + DB + ".processdata";
  
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
  
@@ -94,7 +97,7 @@ public class WorkflowDb {
 	public ProcessDataDto getProcessData(String processInstanceId) {
 		ProcessDataDto processDataDto = new ProcessDataDto();
 		try{
-			String selectStatement = "Select * from workflowdb.processdata where processInstanceID = '" + processInstanceId + "'";
+			String selectStatement = "Select * from " + DB + ".processdata where processInstanceID = '" + processInstanceId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
 			ResultSet rs = prepareStat.executeQuery();
@@ -121,7 +124,7 @@ public class WorkflowDb {
 		log("addProcessData(...) - processDataDto.getProcessInstanceId(): " + processDataDto.getProcessInstanceId());
 		try{
 			String insertStatement = 
-					"insert into workflowdb.processdata "
+					"insert into " + DB + ".processdata "
 					+ "(processInstanceID)"
 					+ "values (?)";
 			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
@@ -141,16 +144,22 @@ public class WorkflowDb {
 	public boolean updateProcessData(ProcessDataDto newProcessDataDto){
 		try{
 			String updateStatement = 
-					"update workflowdb.processdata "
+					"update " + DB + ".processdata "
 					+ "set field1 = ?, "
 					+ "field2 = ?, "
-					+ "field3 = ? "
+					+ "field3 = ?, "
+					+ "field4 = ?, "
+					+ "field5 = ?, "
+					+ "field6 = ? "
 					+ "where processInstanceID = ?";
 			prepareStat = workflowDbConnection.prepareStatement(updateStatement);
 			prepareStat.setString(1, newProcessDataDto.getField1());
 			prepareStat.setString(2, newProcessDataDto.getField2());
 			prepareStat.setString(3, newProcessDataDto.getField3());
-			prepareStat.setString(4, newProcessDataDto.getProcessInstanceId());
+			prepareStat.setString(4, newProcessDataDto.getField4());
+			prepareStat.setString(5, newProcessDataDto.getField5());
+			prepareStat.setString(6, newProcessDataDto.getField6());
+			prepareStat.setString(7, newProcessDataDto.getProcessInstanceId());
 
 			prepareStat.executeUpdate();
 	      
@@ -166,7 +175,7 @@ public class WorkflowDb {
 	public RightUiComponentListDto getAllRightUiComponents(String rightId) {
 		RightUiComponentListDto rightUiComponentListDto = new RightUiComponentListDto();
 		try {
-			String selectStatement = "SELECT * FROM workflowdb.right_uicomponent WHERE rightId = ?";
+			String selectStatement = "SELECT * FROM " + DB + ".right_uicomponent WHERE rightId = ?";
  
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			prepareStat.setString(1, rightId);
@@ -203,7 +212,7 @@ public class WorkflowDb {
 	public UserRightListDto getAllUserRights(String userId) {
 		UserRightListDto userRightListDto = new UserRightListDto();
 		try {
-			String selectStatement = "SELECT * FROM workflowdb.user_right WHERE userId = ?";
+			String selectStatement = "SELECT * FROM " + DB + ".user_right WHERE userId = ?";
  
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			prepareStat.setString(1, userId);
@@ -234,7 +243,7 @@ public class WorkflowDb {
 	public RightUiComponentDto getRightUiComponent(String rightId, String uicomponentId) {
 		RightUiComponentDto rightUiComponentDto = new RightUiComponentDto();
 		try{
-			String selectStatement = "Select * from workflowdb.right_uicomponent where rightid = '" + rightId + "' and uicomponentId = '" + uicomponentId + "'";
+			String selectStatement = "Select * from " + DB + ".right_uicomponent where rightid = '" + rightId + "' and uicomponentId = '" + uicomponentId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
 			ResultSet rs = prepareStat.executeQuery();
@@ -267,7 +276,7 @@ public class WorkflowDb {
 	public boolean updateRightUiComponent(RightUiComponentDto newRightUiComponentDto){
 		try{
 			String updateStatement = 
-					"update workflowdb.right_uicomponent "
+					"update " + DB + ".right_uicomponent "
 					+ "set enabled = ?, "
 					+ "required = ?, "
 					+ "visible = ? "
@@ -293,7 +302,7 @@ public class WorkflowDb {
 	public UserListDto getAllUsers() {
 		UserListDto userListDto = new UserListDto();
 		try {
-			String selectStatement = "SELECT * FROM workflowdb.user";
+			String selectStatement = "SELECT * FROM " + DB + ".user";
  
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
  
@@ -327,7 +336,7 @@ public class WorkflowDb {
 	public UserDto getUser(String userId) {
 		UserDto userDto = new UserDto();
 		try{
-			String selectStatement = "Select * from workflowdb.user where userID = '" + userId + "'";
+			String selectStatement = "Select * from " + DB + ".user where userID = '" + userId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
 			ResultSet rs = prepareStat.executeQuery();
@@ -359,7 +368,7 @@ public class WorkflowDb {
 		log(newUserDto.getId() + " " + newUserDto.getLastName() + " " + newUserDto.getFirstName() + " " + newUserDto.getEmail());
 		try{
 			String updateStatement = 
-					"update workflowdb.user "
+					"update " + DB + ".user "
 					+ "set lastname = ?, "
 					+ "firstname = ?, "
 					+ "email = ? "
@@ -385,7 +394,7 @@ public class WorkflowDb {
 		log(newUserDto.getId() + " " + newUserDto.getLastName() + " " + newUserDto.getFirstName() + " " + newUserDto.getEmail());
 		try{
 			String insertStatement = 
-					"insert into workflowdb.user "
+					"insert into " + DB + ".user "
 					+ "(userID, lastname, firstname, email)"
 					+ "values (?, ?, ?, ?)";
 			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
@@ -409,7 +418,7 @@ public class WorkflowDb {
 		log("deleteUser(...) - userId: " + userId);
 		try{
 			String deleteStatement = 
-					"delete from workflowdb.user "
+					"delete from " + DB + ".user "
 					+ "where userID = ?";
 			prepareStat = workflowDbConnection.prepareStatement(deleteStatement);
 			prepareStat.setString(1, userId);
@@ -428,7 +437,7 @@ public class WorkflowDb {
 	public RightListDto getAllRights() {
 		RightListDto rightListDto = new RightListDto();
 		try {
-			String selectStatement = "SELECT * FROM workflowdb.right";
+			String selectStatement = "SELECT * FROM " + DB + ".right";
  
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
  
@@ -458,7 +467,7 @@ public class WorkflowDb {
 	public RightDto getRight(String rightId) {
 		RightDto rightDto = new RightDto();
 		try{
-			String selectStatement = "Select * from workflowdb.right where rightID = '" + rightId + "'";
+			String selectStatement = "Select * from " + DB + ".right where rightID = '" + rightId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
 			ResultSet rs = prepareStat.executeQuery();
@@ -486,8 +495,8 @@ public class WorkflowDb {
 		RightDto rightDto = new RightDto();
 		try{
 			String selectStatement = "select r.*"
-					+ " from workflowdb.right r"
-					+ " inner join workflowdb.user_right ur on r.rightID = ur.rightId"
+					+ " from " + DB + ".right r"
+					+ " inner join " + DB + ".user_right ur on r.rightID = ur.rightId"
 					+ " where ur.userId = '" + userId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
@@ -516,7 +525,7 @@ public class WorkflowDb {
 		log(newRightDto.getRightId() + " " + newRightDto.getDescription());
 		try{
 			String updateStatement = 
-					"update workflowdb.right "
+					"update " + DB + ".right "
 					+ "set description = ? "
 					+ "where rightID = ?";
 			prepareStat = workflowDbConnection.prepareStatement(updateStatement);
@@ -538,7 +547,7 @@ public class WorkflowDb {
 		log(newRightDto.getRightId() + " " + newRightDto.getDescription());
 		try{
 			String insertStatement = 
-					"insert into workflowdb.right "
+					"insert into " + DB + ".right "
 					+ "(rightID, description)"
 					+ "values (?, ?)";
 			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
@@ -560,7 +569,7 @@ public class WorkflowDb {
 		log("newUserRightDto.getUserId():" + newUserRightDto.getUserId() + ", newUserRightDto.getRightId(): " + newUserRightDto.getRightId());
 		try{
 			String insertStatement = 
-					"insert into workflowdb.user_right "
+					"insert into " + DB + ".user_right "
 					+ "(userId, rightId)"
 					+ "values (?, ?)";
 			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
@@ -582,7 +591,7 @@ public class WorkflowDb {
 		log("deleteRight(...) - rightId: " + rightId);
 		try{
 			String deleteStatement = 
-					"delete from workflowdb.right "
+					"delete from " + DB + ".right "
 					+ "where rightID = ?";
 			prepareStat = workflowDbConnection.prepareStatement(deleteStatement);
 			prepareStat.setString(1, rightId);
@@ -602,7 +611,7 @@ public class WorkflowDb {
 		log("userId:" + userId + ", rightId: " + rightId);
 		try{
 			String deleteStatement = 
-					"delete from workflowdb.user_right "
+					"delete from " + DB + ".user_right "
 					+ "where userId = ? and rightId = ?";
 			prepareStat = workflowDbConnection.prepareStatement(deleteStatement);
 			prepareStat.setString(1, userId);
@@ -622,7 +631,7 @@ public class WorkflowDb {
 	public GroupListDto getAllGroups() {
 		GroupListDto groupListDto = new GroupListDto();
 		try {
-			String selectStatement = "SELECT * FROM workflowdb.group";
+			String selectStatement = "SELECT * FROM " + DB + ".group";
  
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
  
@@ -652,7 +661,7 @@ public class WorkflowDb {
 	public GroupDto getGroup(String groupId) {
 		GroupDto groupDto = new GroupDto();
 		try{
-			String selectStatement = "Select * from workflowdb.group where groupID = '" + groupId + "'";
+			String selectStatement = "Select * from " + DB + ".group where groupID = '" + groupId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
 			ResultSet rs = prepareStat.executeQuery();
@@ -680,7 +689,7 @@ public class WorkflowDb {
 		log(newGroupDto.getGroupId() + " " + newGroupDto.getDescription());
 		try{
 			String updateStatement = 
-					"update workflowdb.group "
+					"update " + DB + ".group "
 					+ "set description = ? "
 					+ "where groupID = ?";
 			prepareStat = workflowDbConnection.prepareStatement(updateStatement);
@@ -702,7 +711,7 @@ public class WorkflowDb {
 		log(newGroupDto.getGroupId() + " " + newGroupDto.getDescription());
 		try{
 			String insertStatement = 
-					"insert into workflowdb.group "
+					"insert into " + DB + ".group "
 					+ "(groupID, description)"
 					+ "values (?, ?)";
 			prepareStat = workflowDbConnection.prepareStatement(insertStatement);
@@ -724,7 +733,7 @@ public class WorkflowDb {
 		log("deleteGroup(...) - groupId: " + groupId);
 		try{
 			String deleteStatement = 
-					"delete from workflowdb.group "
+					"delete from " + DB + ".group "
 					+ "where groupID = ?";
 			prepareStat = workflowDbConnection.prepareStatement(deleteStatement);
 			prepareStat.setString(1, groupId);

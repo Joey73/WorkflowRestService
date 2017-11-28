@@ -70,6 +70,9 @@ public class ProcessData {
 		System.out.println("processDataDto.getField1(): " + processDataDto.getField1());
 		System.out.println("processDataDto.getField2(): " + processDataDto.getField2());
 		System.out.println("processDataDto.getField3(): " + processDataDto.getField3());
+		System.out.println("processDataDto.getField4(): " + processDataDto.getField4());
+		System.out.println("processDataDto.getField5(): " + processDataDto.getField5());
+		System.out.println("processDataDto.getField6(): " + processDataDto.getField6());
 		
 		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.updateProcessData(processDataDto);
