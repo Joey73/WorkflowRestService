@@ -1,5 +1,7 @@
 package com.joerg.rest;
 
+import java.sql.SQLException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,7 +28,7 @@ public class ProcessData {
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
-	public Response getAllProcessData() throws JsonProcessingException{
+	public Response getAllProcessData() throws SQLException, JsonProcessingException{
 		ProcessDataDtoList allProcessData = workflowDb.getAllProcessData();
 		
 		ObjectMapper om = new ObjectMapper();
@@ -34,11 +36,11 @@ public class ProcessData {
 		
 		return Response.status(200).entity(valueAsString).build();
 	}
-
+	
 	@GET
 	@Path("/get/{processInstanceId}")
 	@Produces("application/json")
-	public ProcessDataDto getProcessData(@PathParam("processInstanceId") String processInstanceId){
+	public ProcessDataDto getProcessData(@PathParam("processInstanceId") String processInstanceId) throws SQLException{
 		System.out.println("processInstanceId: " + processInstanceId);
 
 		return workflowDb.getProcessData(processInstanceId);
@@ -48,7 +50,7 @@ public class ProcessData {
     @Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addProcessData(ProcessDataDto processDataDto) {
+	public Response addProcessData(ProcessDataDto processDataDto) throws SQLException {
 		if(processDataDto == null) {
 			return Response.status(204).build();
 		}
@@ -63,7 +65,7 @@ public class ProcessData {
     @Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateProcessData(ProcessDataDto processDataDto) {
+	public Response updateProcessData(ProcessDataDto processDataDto) throws SQLException {
 		if(processDataDto == null) {
 			return Response.status(204).build();
 		}

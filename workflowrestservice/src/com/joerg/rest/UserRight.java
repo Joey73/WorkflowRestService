@@ -1,5 +1,7 @@
 package com.joerg.rest;
 
+import java.sql.SQLException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,7 +29,7 @@ public class UserRight {
 	@GET
 	@Path("/getall/{userId}")
 	@Produces("application/json")
-	public Response getAllUserRights(@PathParam("userId") String userId) throws JsonProcessingException{
+	public Response getAllUserRights(@PathParam("userId") String userId) throws SQLException, JsonProcessingException{
 		if(userId == null) {
 			return Response.status(200).entity(new UserRightListDto()).build();
 		}
@@ -43,7 +45,7 @@ public class UserRight {
     @Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateUserRight(UserRightDto userRightDto) {
+	public Response updateUserRight(UserRightDto userRightDto) throws SQLException {
 		if(userRightDto == null) {
 			return Response.status(204).build();
 		}
@@ -58,7 +60,7 @@ public class UserRight {
 	@DELETE
     @Path("/delete/{userId}/{rightId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteRight(@PathParam("userId") String userId, @PathParam("rightId") String rightId) {
+	public void deleteRight(@PathParam("userId") String userId, @PathParam("rightId") String rightId) throws SQLException {
 		System.out.println("deleteRight() - userId: " + userId);
 		System.out.println("deleteRight() - userId: " + rightId);
 

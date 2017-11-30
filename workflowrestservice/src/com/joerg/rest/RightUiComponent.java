@@ -1,5 +1,7 @@
 package com.joerg.rest;
 
+import java.sql.SQLException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,7 +28,7 @@ public class RightUiComponent {
 	@GET
 	@Path("/getall/{rightId}")
 	@Produces("application/json")
-	public Response getAllRightUiComponents(@PathParam("rightId") String rightId) throws JsonProcessingException{
+	public Response getAllRightUiComponents(@PathParam("rightId") String rightId) throws SQLException, JsonProcessingException{
 		if(rightId == null) {
 			return Response.status(204).build();
 		}
@@ -41,7 +43,7 @@ public class RightUiComponent {
 	@GET
 	@Path("/get/{rightId}/{uicomponentId}")
 	@Produces("application/json")
-	public RightUiComponentDto getRightUiComponents(@PathParam("rightId") String rightId, @PathParam("uicomponentId") String uicomponentId){
+	public RightUiComponentDto getRightUiComponents(@PathParam("rightId") String rightId, @PathParam("uicomponentId") String uicomponentId) throws SQLException {
 		System.out.println("componentId: " + uicomponentId);
 
 		return workflowDb.getRightUiComponent(rightId, uicomponentId);
@@ -51,7 +53,7 @@ public class RightUiComponent {
     @Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateRightUiComponent(RightUiComponentDto rightUiComponentDto) {
+	public Response updateRightUiComponent(RightUiComponentDto rightUiComponentDto) throws SQLException {
 		if(rightUiComponentDto == null) {
 			return Response.status(204).build();
 		}

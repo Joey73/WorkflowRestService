@@ -1,5 +1,7 @@
 package com.joerg.rest;
 
+import java.sql.SQLException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,7 +30,7 @@ public class Group {
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
-	public Response getAllGroups() throws JsonProcessingException{
+	public Response getAllGroups() throws SQLException, JsonProcessingException{
 		GroupListDto allGroups = workflowDb.getAllGroups();
 		
 		ObjectMapper om = new ObjectMapper();
@@ -40,7 +42,7 @@ public class Group {
 	@GET
 	@Path("/get/{groupId}")
 	@Produces("application/json")
-	public GroupDto getGroup(@PathParam("componentId") String groupId){
+	public GroupDto getGroup(@PathParam("componentId") String groupId) throws SQLException{
 		System.out.println("groupId: " + groupId);
 
 		return workflowDb.getGroup(groupId);
@@ -50,7 +52,7 @@ public class Group {
     @Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addGroup(GroupDto groupDto) {
+	public Response addGroup(GroupDto groupDto) throws SQLException {
 		if(groupDto == null) {
 			return Response.status(204).build();
 		}
@@ -66,7 +68,7 @@ public class Group {
     @Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateGroup(GroupDto groupDto) {
+	public Response updateGroup(GroupDto groupDto) throws SQLException {
 		if(groupDto == null) {
 			return Response.status(204).build();
 		}
@@ -81,7 +83,7 @@ public class Group {
 	@DELETE
     @Path("/delete/{groupId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteGroup(@PathParam("groupId") String groupId) {
+	public void deleteGroup(@PathParam("groupId") String groupId) throws SQLException {
 		System.out.println("groupId(): " + groupId);
 		
 		workflowDb.deleteGroup(groupId);

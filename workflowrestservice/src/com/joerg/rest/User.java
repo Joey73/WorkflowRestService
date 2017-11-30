@@ -1,5 +1,7 @@
 package com.joerg.rest;
 
+import java.sql.SQLException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,7 +30,7 @@ public class User {
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
-	public Response getAllUsers() throws JsonProcessingException{
+	public Response getAllUsers() throws SQLException, JsonProcessingException{
 		UserListDto allUsers = workflowDb.getAllUsers();
 		
 		ObjectMapper om = new ObjectMapper();
@@ -40,7 +42,7 @@ public class User {
 	@GET
 	@Path("/get/{userId}")
 	@Produces("application/json")
-	public UserDto getUser(@PathParam("componentId") String userId){
+	public UserDto getUser(@PathParam("componentId") String userId) throws SQLException{
 		System.out.println("userId: " + userId);
 
 		return workflowDb.getUser(userId);
@@ -50,7 +52,7 @@ public class User {
     @Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addUser(UserDto userDto) {
+	public Response addUser(UserDto userDto) throws SQLException {
 		if(userDto == null) {
 			return Response.status(204).build();
 		}
@@ -68,7 +70,7 @@ public class User {
     @Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateUser(UserDto userDto) {
+	public Response updateUser(UserDto userDto) throws SQLException {
 		if(userDto == null) {
 			return Response.status(204).build();
 		}
@@ -85,7 +87,7 @@ public class User {
 	@DELETE
     @Path("/delete/{userId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteUser(@PathParam("userId") String userId) {
+	public void deleteUser(@PathParam("userId") String userId) throws SQLException {
 		System.out.println("userId(): " + userId);
 		
 		workflowDb.deleteUser(userId);

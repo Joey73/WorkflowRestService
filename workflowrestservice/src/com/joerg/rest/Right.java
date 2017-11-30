@@ -1,5 +1,7 @@
 package com.joerg.rest;
 
+import java.sql.SQLException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,7 +30,7 @@ public class Right {
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
-	public Response getAllRights() throws JsonProcessingException{
+	public Response getAllRights() throws SQLException, JsonProcessingException{
 		RightListDto allRights = workflowDb.getAllRights();
 		
 		ObjectMapper om = new ObjectMapper();
@@ -40,7 +42,7 @@ public class Right {
 	@GET
 	@Path("/get/{rightId}")
 	@Produces("application/json")
-	public RightDto getRight(@PathParam("componentId") String rightId){
+	public RightDto getRight(@PathParam("componentId") String rightId) throws SQLException{
 		System.out.println("rightId: " + rightId);
 
 		return workflowDb.getRight(rightId);
@@ -49,7 +51,7 @@ public class Right {
 	@GET
 	@Path("/getviauser/{userId}")
 	@Produces("application/json")
-	public RightDto getRightViaUser(@PathParam("userId") String userId){
+	public RightDto getRightViaUser(@PathParam("userId") String userId) throws SQLException{
 		System.out.println("rightId: " + userId);
 
 		return workflowDb.getRightViaUser(userId);
@@ -59,7 +61,7 @@ public class Right {
     @Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addRight(RightDto rightDto) {
+	public Response addRight(RightDto rightDto) throws SQLException {
 		if(rightDto == null) {
 			return Response.status(204).build();
 		}
@@ -75,7 +77,7 @@ public class Right {
     @Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateRight(RightDto rightDto) {
+	public Response updateRight(RightDto rightDto) throws SQLException {
 		if(rightDto == null) {
 			return Response.status(204).build();
 		}
@@ -90,7 +92,7 @@ public class Right {
 	@DELETE
     @Path("/delete/{rightId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteRight(@PathParam("rightId") String rightId) {
+	public void deleteRight(@PathParam("rightId") String rightId) throws SQLException {
 		System.out.println("rightId(): " + rightId);
 		
 		workflowDb.deleteRight(rightId);
