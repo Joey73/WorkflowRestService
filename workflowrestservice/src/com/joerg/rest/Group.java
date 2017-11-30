@@ -19,11 +19,16 @@ import com.joerg.rest.dtos.GroupListDto;
 
 @Path("/group")
 public class Group {
+	private WorkflowDb workflowDb = null;
+	
+	public Group(){
+		workflowDb = new WorkflowDb();
+	}
+
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
 	public Response getAllGroups() throws JsonProcessingException{
-		WorkflowDb workflowDb = new WorkflowDb();
 		GroupListDto allGroups = workflowDb.getAllGroups();
 		
 		ObjectMapper om = new ObjectMapper();
@@ -38,7 +43,6 @@ public class Group {
 	public GroupDto getGroup(@PathParam("componentId") String groupId){
 		System.out.println("groupId: " + groupId);
 
-		WorkflowDb workflowDb = new WorkflowDb();
 		return workflowDb.getGroup(groupId);
 	}
 	
@@ -53,7 +57,6 @@ public class Group {
 		System.out.println("groupDto.getGroupId(): " + groupDto.getGroupId());
 		System.out.println("groupDto.getDescription(): " + groupDto.getDescription());
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.addGroup(groupDto);
 		
 		return Response.status(200).entity(groupDto).build();
@@ -70,7 +73,6 @@ public class Group {
 		System.out.println("groupDto.getGroupId(): " + groupDto.getGroupId());
 		System.out.println("groupDto.getDescription(): " + groupDto.getDescription());
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.updateGroup(groupDto);
 		
 		return Response.status(200).entity(groupDto).build();
@@ -82,7 +84,6 @@ public class Group {
 	public void deleteGroup(@PathParam("groupId") String groupId) {
 		System.out.println("groupId(): " + groupId);
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.deleteGroup(groupId);
 	}
 }

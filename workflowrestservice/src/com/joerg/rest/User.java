@@ -14,18 +14,21 @@ import javax.ws.rs.core.Response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joerg.db.WorkflowDb;
-import com.joerg.db.WorkflowDbDummyData;
-import com.joerg.rest.dtos.ProcessDataDto;
 import com.joerg.rest.dtos.UserDto;
 import com.joerg.rest.dtos.UserListDto;
 
 @Path("/user")
 public class User {
+	private WorkflowDb workflowDb = null;
+	
+	public User(){
+		workflowDb = new WorkflowDb();
+	}
+
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
 	public Response getAllUsers() throws JsonProcessingException{
-		WorkflowDb workflowDb = new WorkflowDb();
 		UserListDto allUsers = workflowDb.getAllUsers();
 		
 		ObjectMapper om = new ObjectMapper();
@@ -40,7 +43,6 @@ public class User {
 	public UserDto getUser(@PathParam("componentId") String userId){
 		System.out.println("userId: " + userId);
 
-		WorkflowDb workflowDb = new WorkflowDb();
 		return workflowDb.getUser(userId);
 	}
 	
@@ -57,7 +59,6 @@ public class User {
 		System.out.println("userDto.getFirstname(): " + userDto.getFirstName());
 		System.out.println("userDto.getEmail(): " + userDto.getEmail());
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.addUser(userDto);
 		
 		return Response.status(200).entity(userDto).build();
@@ -76,7 +77,6 @@ public class User {
 		System.out.println("userDto.getFirstname(): " + userDto.getFirstName());
 		System.out.println("userDto.getEmail(): " + userDto.getEmail());
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.updateUser(userDto);
 		
 		return Response.status(200).entity(userDto).build();
@@ -88,7 +88,6 @@ public class User {
 	public void deleteUser(@PathParam("userId") String userId) {
 		System.out.println("userId(): " + userId);
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.deleteUser(userId);
 	}
 }

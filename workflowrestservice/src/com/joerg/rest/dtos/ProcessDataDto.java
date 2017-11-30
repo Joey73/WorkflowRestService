@@ -16,11 +16,14 @@ public class ProcessDataDto {
 		super();
 	}
 	
-	public ProcessDataDto(String processInstanceId, String field1, String field2, String field3){
+	public ProcessDataDto(String processInstanceId, String field1, String field2, String field3, String field4, String field5, String field6){
 		this.processInstanceId = processInstanceId;
 		this.field1 = field1;
 		this.field2 = field2;
 		this.field3 = field3;
+		this.field4 = field4;
+		this.field5 = field5;
+		this.field6 = field6;
 	}
 	
 	public String getProcessInstanceId() {

@@ -19,11 +19,16 @@ import com.joerg.rest.dtos.RightListDto;
 
 @Path("/right")
 public class Right {
+	private WorkflowDb workflowDb = null;
+	
+	public Right(){
+		workflowDb = new WorkflowDb();
+	}
+	
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
 	public Response getAllRights() throws JsonProcessingException{
-		WorkflowDb workflowDb = new WorkflowDb();
 		RightListDto allRights = workflowDb.getAllRights();
 		
 		ObjectMapper om = new ObjectMapper();
@@ -38,7 +43,6 @@ public class Right {
 	public RightDto getRight(@PathParam("componentId") String rightId){
 		System.out.println("rightId: " + rightId);
 
-		WorkflowDb workflowDb = new WorkflowDb();
 		return workflowDb.getRight(rightId);
 	}
 
@@ -48,7 +52,6 @@ public class Right {
 	public RightDto getRightViaUser(@PathParam("userId") String userId){
 		System.out.println("rightId: " + userId);
 
-		WorkflowDb workflowDb = new WorkflowDb();
 		return workflowDb.getRightViaUser(userId);
 	}
 
@@ -63,7 +66,6 @@ public class Right {
 		System.out.println("rightDto.getRightId(): " + rightDto.getRightId());
 		System.out.println("rightDto.getDescription(): " + rightDto.getDescription());
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.addRight(rightDto);
 		
 		return Response.status(200).entity(rightDto).build();
@@ -80,7 +82,6 @@ public class Right {
 		System.out.println("rightDto.getRightId(): " + rightDto.getRightId());
 		System.out.println("rightDto.getDescription(): " + rightDto.getDescription());
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.updateRight(rightDto);
 		
 		return Response.status(200).entity(rightDto).build();
@@ -92,7 +93,6 @@ public class Right {
 	public void deleteRight(@PathParam("rightId") String rightId) {
 		System.out.println("rightId(): " + rightId);
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.deleteRight(rightId);
 	}
 }

@@ -18,6 +18,12 @@ import com.joerg.rest.dtos.UserRightListDto;
 
 @Path("/userright")
 public class UserRight {
+	private WorkflowDb workflowDb = null;
+	
+	public UserRight(){
+		workflowDb = new WorkflowDb();
+	}
+
 	@GET
 	@Path("/getall/{userId}")
 	@Produces("application/json")
@@ -25,7 +31,6 @@ public class UserRight {
 		if(userId == null) {
 			return Response.status(200).entity(new UserRightListDto()).build();
 		}
-		WorkflowDb workflowDb = new WorkflowDb();
 		UserRightListDto allUserRights = workflowDb.getAllUserRights(userId);
 		
 		ObjectMapper om = new ObjectMapper();
@@ -45,7 +50,6 @@ public class UserRight {
 		System.out.println("updateUserRight.getUserId(): " + userRightDto.getUserId());
 		System.out.println("updateUserRight.getRightId(): " + userRightDto.getRightId());
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.addUserRight(userRightDto);
 		
 		return Response.status(200).entity(userRightDto).build();
@@ -58,7 +62,6 @@ public class UserRight {
 		System.out.println("deleteRight() - userId: " + userId);
 		System.out.println("deleteRight() - userId: " + rightId);
 
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.deleteUserRight(userId, rightId);
 	}
 }

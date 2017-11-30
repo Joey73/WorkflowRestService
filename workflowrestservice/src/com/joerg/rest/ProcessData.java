@@ -19,11 +19,15 @@ import com.joerg.rest.dtos.RightUiComponentDto;
 
 @Path("/processdata")
 public class ProcessData {
+	private WorkflowDb workflowDb = null;
+	
+	public ProcessData() {
+		workflowDb = new WorkflowDb();
+	}
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
 	public Response getAllProcessData() throws JsonProcessingException{
-		WorkflowDb workflowDb = new WorkflowDb();
 		ProcessDataDtoList allProcessData = workflowDb.getAllProcessData();
 		
 		ObjectMapper om = new ObjectMapper();
@@ -38,7 +42,6 @@ public class ProcessData {
 	public ProcessDataDto getProcessData(@PathParam("processInstanceId") String processInstanceId){
 		System.out.println("processInstanceId: " + processInstanceId);
 
-		WorkflowDb workflowDb = new WorkflowDb();
 		return workflowDb.getProcessData(processInstanceId);
 	}
 
@@ -52,7 +55,6 @@ public class ProcessData {
 		}
 		System.out.println("processDataDto.getProcessInstanceId(): " + processDataDto.getProcessInstanceId());
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.addProcessData(processDataDto);
 		
 		return Response.status(200).entity(processDataDto).build();
@@ -74,7 +76,6 @@ public class ProcessData {
 		System.out.println("processDataDto.getField5(): " + processDataDto.getField5());
 		System.out.println("processDataDto.getField6(): " + processDataDto.getField6());
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.updateProcessData(processDataDto);
 		
 		return Response.status(200).entity(processDataDto).build();

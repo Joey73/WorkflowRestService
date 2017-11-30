@@ -12,12 +12,17 @@ import javax.ws.rs.core.Response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joerg.db.WorkflowDb;
-import com.joerg.db.WorkflowDbDummyData;
 import com.joerg.rest.dtos.RightUiComponentDto;
 import com.joerg.rest.dtos.RightUiComponentListDto;
 
 @Path("/rightuicomponent")
 public class RightUiComponent {
+	private WorkflowDb workflowDb = null;
+	
+	public RightUiComponent() {
+		workflowDb = new WorkflowDb();
+	}
+	
 	@GET
 	@Path("/getall/{rightId}")
 	@Produces("application/json")
@@ -25,7 +30,6 @@ public class RightUiComponent {
 		if(rightId == null) {
 			return Response.status(204).build();
 		}
-		WorkflowDb workflowDb = new WorkflowDb();
 		RightUiComponentListDto allRightUiComponents = workflowDb.getAllRightUiComponents(rightId);
 		
 		ObjectMapper om = new ObjectMapper();
@@ -40,7 +44,6 @@ public class RightUiComponent {
 	public RightUiComponentDto getRightUiComponents(@PathParam("rightId") String rightId, @PathParam("uicomponentId") String uicomponentId){
 		System.out.println("componentId: " + uicomponentId);
 
-		WorkflowDb workflowDb = new WorkflowDb();
 		return workflowDb.getRightUiComponent(rightId, uicomponentId);
 	}
 	
@@ -57,7 +60,6 @@ public class RightUiComponent {
 		System.out.println("rightUiComponentDto.isEnabled(): " + rightUiComponentDto.isEnabled());
 		System.out.println("rightUiComponentDto.isRequired(): " + rightUiComponentDto.isRequired());
 		
-		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.updateRightUiComponent(rightUiComponentDto);
 		
 		return Response.status(200).entity(rightUiComponentDto).build();

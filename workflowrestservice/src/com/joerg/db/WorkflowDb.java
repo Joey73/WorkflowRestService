@@ -1,5 +1,7 @@
 package com.joerg.db;
 
+import java.beans.PropertyVetoException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.joerg.db.c3po.DataSource;
 import com.joerg.rest.ProcessData;
 import com.joerg.rest.dtos.GroupDto;
 import com.joerg.rest.dtos.GroupListDto;
@@ -24,20 +27,29 @@ import com.joerg.rest.dtos.UserRightListDto;
 
 public class WorkflowDb {
 	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/workflowdb";
-	public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/resisdb";
+	//public static final String CONNECTION_STRING = "jdbc:mysql://172.17.0.2:3306/resisdb";
 	//public static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/workflowdb";
-	public static final String USER = "root";
-	public static final String PASSWORD = "12345";
+	//public static final String USER = "root";
+	//public static final String PASSWORD = "12345";
 	//public static final String DB = "workflowdb";
 	public static final String DB = "resisdb";
-
+	
 	static Connection workflowDbConnection = null;
 	static PreparedStatement prepareStat = null;
 	
 	public WorkflowDb(){
-		makeJDBCConnection();
+		try {
+			workflowDbConnection = DataSource.getInstance().getConnection();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (PropertyVetoException e) {
+			e.printStackTrace();
+		}
 	}
-
+	
+	/*
 	public static void main(String[] args){
 		WorkflowDb workflowDb = new WorkflowDb();
 		workflowDb.getAllProcessData();
@@ -66,56 +78,83 @@ public class WorkflowDb {
 			return;
 		}
 	}
+	*/
 
 	public ProcessDataDtoList getAllProcessData() {
+		ResultSet rs = null;
+		String selectStatement = "SELECT * FROM " + DB + ".processdata";
 		ProcessDataDtoList processDataDtoList = new ProcessDataDtoList();
 		try {
-			String selectStatement = "SELECT * FROM " + DB + ".processdata";
  
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
  
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
  
 			while (rs.next()) {
-				processDataDtoList.addProcessDataDto(new ProcessDataDto(rs.getString("processInstanceID"), rs.getString("field1"), rs.getString("field2"), rs.getString("field3")));
+				processDataDtoList.addProcessDataDto(
+						new ProcessDataDto(
+								rs.getString("processInstanceID"),
+								rs.getString("field1"),
+								rs.getString("field2"),
+								rs.getString("field3"),
+								rs.getString("field4"),
+								rs.getString("field5"),
+								rs.getString("field6")
+						)
+				);
 
 				String processInstanceID = rs.getString("processInstanceID");
 				String field1 = rs.getString("field1");
 				String field2 = rs.getString("field2");
 				String field3 = rs.getString("field3");
+				String field4 = rs.getString("field4");
+				String field5 = rs.getString("field5");
+				String field6 = rs.getString("field6");
  
-				System.out.format("%s, %s, %s, %s\n", processInstanceID, field1, field2, field3);
+				System.out.format("%s, %s, %s, %s, %s, %s, %s\n", processInstanceID, field1, field2, field3, field4, field5, field6);
 			}
-			//workflowDbConnection.close();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		
+		} finally {
+            closeEverthing(rs);
+        }		
 		return processDataDtoList; 
 	}
 
 	public ProcessDataDto getProcessData(String processInstanceId) {
+		ResultSet rs = null;
 		ProcessDataDto processDataDto = new ProcessDataDto();
 		try{
 			String selectStatement = "Select * from " + DB + ".processdata where processInstanceID = '" + processInstanceId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
 			
 			while (rs.next()) {
-				processDataDto = new ProcessDataDto(rs.getString("processInstanceID"), rs.getString("field1"), rs.getString("field2"), rs.getString("field3"));
+				processDataDto = new ProcessDataDto(
+						rs.getString("processInstanceID"),
+						rs.getString("field1"),
+						rs.getString("field2"),
+						rs.getString("field3"),
+						rs.getString("field4"),
+						rs.getString("field5"),
+						rs.getString("field6"));
 
 				String processInstanceID = rs.getString("processInstanceID");
 				String field1 = rs.getString("field1");
 				String field2 = rs.getString("field2");
 				String field3 = rs.getString("field3");
+				String field4 = rs.getString("field4");
+				String field5 = rs.getString("field5");
  
 				System.out.format("%s, %s, %s, %s\n", processInstanceID, field1, field2, field3);
 			}
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            closeEverthing(rs);
+        }
 		
 		return processDataDto;
 	}
@@ -136,7 +175,9 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
@@ -167,12 +208,15 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
 	
 	public RightUiComponentListDto getAllRightUiComponents(String rightId) {
+		ResultSet rs = null;
 		RightUiComponentListDto rightUiComponentListDto = new RightUiComponentListDto();
 		try {
 			String selectStatement = "SELECT * FROM " + DB + ".right_uicomponent WHERE rightId = ?";
@@ -180,7 +224,7 @@ public class WorkflowDb {
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			prepareStat.setString(1, rightId);
  
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
  
 			while (rs.next()) {
 				rightUiComponentListDto.addRightUiComponentDto(
@@ -204,12 +248,15 @@ public class WorkflowDb {
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            closeEverthing(rs);
+        }
 		
 		return rightUiComponentListDto; 
 	}
 
 	public UserRightListDto getAllUserRights(String userId) {
+		ResultSet rs = null;
 		UserRightListDto userRightListDto = new UserRightListDto();
 		try {
 			String selectStatement = "SELECT * FROM " + DB + ".user_right WHERE userId = ?";
@@ -217,7 +264,7 @@ public class WorkflowDb {
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			prepareStat.setString(1, userId);
  
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
  
 			while (rs.next()) {
 				userRightListDto.addUserRightDto(
@@ -235,18 +282,21 @@ public class WorkflowDb {
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            closeEverthing(rs);
+        }
 		
 		return userRightListDto; 
 	}
 	
 	public RightUiComponentDto getRightUiComponent(String rightId, String uicomponentId) {
+		ResultSet rs = null;
 		RightUiComponentDto rightUiComponentDto = new RightUiComponentDto();
 		try{
 			String selectStatement = "Select * from " + DB + ".right_uicomponent where rightid = '" + rightId + "' and uicomponentId = '" + uicomponentId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
 			
 			while (rs.next()) {
 				rightUiComponentDto = new RightUiComponentDto(
@@ -268,7 +318,9 @@ public class WorkflowDb {
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            closeEverthing(rs);
+        }
 		
 		return rightUiComponentDto;
 	}
@@ -294,19 +346,22 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
 
 	public UserListDto getAllUsers() {
+		ResultSet rs = null;
 		UserListDto userListDto = new UserListDto();
 		try {
 			String selectStatement = "SELECT * FROM " + DB + ".user";
  
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
  
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
  
 			while (rs.next()) {
 				userListDto.addUserDto(
@@ -328,18 +383,21 @@ public class WorkflowDb {
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            closeEverthing(rs);
+        }
 		
 		return userListDto; 
 	}
 	
 	public UserDto getUser(String userId) {
+		ResultSet rs = null;
 		UserDto userDto = new UserDto();
 		try{
 			String selectStatement = "Select * from " + DB + ".user where userID = '" + userId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
 			
 			while (rs.next()) {
 				userDto = new UserDto(
@@ -359,7 +417,9 @@ public class WorkflowDb {
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            closeEverthing(rs);
+        }
 		
 		return userDto;
 	}
@@ -385,7 +445,9 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
@@ -409,7 +471,9 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
@@ -429,19 +493,22 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
 	
 	public RightListDto getAllRights() {
+		ResultSet rs = null;
 		RightListDto rightListDto = new RightListDto();
 		try {
 			String selectStatement = "SELECT * FROM " + DB + ".right";
  
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
  
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
  
 			while (rs.next()) {
 				rightListDto.addRightDto(
@@ -459,18 +526,21 @@ public class WorkflowDb {
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            closeEverthing(rs);
+        }
 		
 		return rightListDto; 
 	}
 	
 	public RightDto getRight(String rightId) {
+		ResultSet rs = null;
 		RightDto rightDto = new RightDto();
 		try{
 			String selectStatement = "Select * from " + DB + ".right where rightID = '" + rightId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
 			
 			while (rs.next()) {
 				rightDto = new RightDto(
@@ -486,12 +556,15 @@ public class WorkflowDb {
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            closeEverthing(rs);
+        }
 		
 		return rightDto;
 	}
 
 	public RightDto getRightViaUser(String userId) {
+		ResultSet rs = null;
 		RightDto rightDto = new RightDto();
 		try{
 			String selectStatement = "select r.*"
@@ -500,7 +573,7 @@ public class WorkflowDb {
 					+ " where ur.userId = '" + userId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
 			
 			while (rs.next()) {
 				rightDto = new RightDto(
@@ -516,7 +589,9 @@ public class WorkflowDb {
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            closeEverthing(rs);
+        }
 		
 		return rightDto;
 	}
@@ -538,7 +613,9 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
@@ -560,7 +637,9 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
@@ -582,7 +661,9 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
@@ -602,7 +683,9 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
@@ -623,19 +706,22 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
 	
 	public GroupListDto getAllGroups() {
+		ResultSet rs = null;
 		GroupListDto groupListDto = new GroupListDto();
 		try {
 			String selectStatement = "SELECT * FROM " + DB + ".group";
  
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
  
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
  
 			while (rs.next()) {
 				groupListDto.addGroupDto(
@@ -653,18 +739,21 @@ public class WorkflowDb {
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            closeEverthing(rs);
+        }
 		
 		return groupListDto; 
 	}
 	
 	public GroupDto getGroup(String groupId) {
+		ResultSet rs = null;
 		GroupDto groupDto = new GroupDto();
 		try{
 			String selectStatement = "Select * from " + DB + ".group where groupID = '" + groupId + "'";
 			prepareStat = workflowDbConnection.prepareStatement(selectStatement);
 			 
-			ResultSet rs = prepareStat.executeQuery();
+			rs = prepareStat.executeQuery();
 			
 			while (rs.next()) {
 				groupDto = new GroupDto(
@@ -680,7 +769,9 @@ public class WorkflowDb {
 			//workflowDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            closeEverthing(rs);
+        }
 		
 		return groupDto;
 	}
@@ -702,7 +793,9 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
@@ -724,7 +817,9 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
@@ -744,7 +839,9 @@ public class WorkflowDb {
 	    }catch (Exception e){
 	        System.err.println("Got an exception! ");
 	        System.err.println(e.getMessage());
-	    }
+	    } finally {
+            closeEverthing();
+        }
 	
 		return true;
 	}
@@ -752,5 +849,33 @@ public class WorkflowDb {
 	private static void log(String string) {
 		System.out.println(string);
  
+	}
+
+	private void closeEverthing() {
+		this.closeEverthing(null);
+	}
+
+	private void closeEverthing(ResultSet rs) {
+		if (rs != null){
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (prepareStat != null){
+			try {
+				prepareStat.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (workflowDbConnection != null){
+			try {
+				workflowDbConnection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
