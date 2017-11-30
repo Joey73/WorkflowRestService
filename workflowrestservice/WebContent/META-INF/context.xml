@@ -1,0 +1,11 @@
+<Context>
+	<Resource name="jdbc/workflowdb"
+		auth="Container"
+		type="javax.sql.DataSource"
+		username="root"
+		password="12345"
+		driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://localhost:3306/workflowdb"
+		maxActive="15"
+		maxIdle="3"/>
+</Context>

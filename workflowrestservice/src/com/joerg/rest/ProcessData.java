@@ -14,8 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joerg.db.WorkflowDb;
 import com.joerg.rest.dtos.ProcessDataDto;
 import com.joerg.rest.dtos.ProcessDataDtoList;
-import com.joerg.rest.dtos.RightDto;
-import com.joerg.rest.dtos.RightUiComponentDto;
 
 @Path("/processdata")
 public class ProcessData {
@@ -24,6 +22,7 @@ public class ProcessData {
 	public ProcessData() {
 		workflowDb = new WorkflowDb();
 	}
+	
 	@GET
 	@Path("/getall")
 	@Produces("application/json")
