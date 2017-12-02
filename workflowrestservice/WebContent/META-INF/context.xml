@@ -1,11 +1,11 @@
 <Context>
-	<Resource name="jdbc/resisdb"
+	<Resource name="jdbc/workflowdb"
 		auth="Container"
 		type="javax.sql.DataSource"
 		username="root"
 		password="12345"
 		driverClassName="com.mysql.jdbc.Driver"
-		url="jdbc:mysql://localhost:3306/resisdb"
+		url="jdbc:mysql://172.17.02:3306/workflowdb"
 		maxActive="15"
 		maxIdle="3"/>
 </Context>

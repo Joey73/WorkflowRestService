@@ -24,14 +24,14 @@ import com.joerg.rest.dtos.UserRightDto;
 import com.joerg.rest.dtos.UserRightListDto;
 
 public class WorkflowDb {
-	public static final String DB = "resisdb";
+	public static final String DB = "workflowdb";
 
 	private final DataSource dataSource;
 
 	public WorkflowDb() {
 		try {
 			Context context = new InitialContext();
-			dataSource = (DataSource) context.lookup("java:/comp/env/jdbc/resisdb");
+			dataSource = (DataSource) context.lookup("java:/comp/env/jdbc/workflowdb");
 		} catch (NamingException e) {
 			e.printStackTrace();
 			throw new RuntimeException("error while looup datasource", e);
