@@ -34,7 +34,7 @@ public class WorkflowDb {
 			dataSource = (DataSource) context.lookup("java:/comp/env/jdbc/workflowdb");
 		} catch (NamingException e) {
 			e.printStackTrace();
-			throw new RuntimeException("error while looup datasource", e);
+			throw new RuntimeException("error lookup datasource", e);
 		}
 	}
 
